@@ -17,7 +17,7 @@ public class DirFilter extends AbstractFileFilter {
         if(name.startsWith(".")){
             return false;
         }
-        System.out.println(name);
+//        System.out.println(name);
         return true;
     }
 }

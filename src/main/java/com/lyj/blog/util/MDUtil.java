@@ -1,21 +1,33 @@
 package com.lyj.blog.util;
 
+import com.lyj.blog.render.CodeBlockRender;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.NodeRenderer;
 import org.commonmark.renderer.html.*;
-import org.commonmark.renderer.text.TextContentRenderer;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * markdown解析工具类
  */
 public class MDUtil {
+    private static List<Extension> extensions = Collections.singletonList(TablesExtension.create());//添加table解析插件
+    private static Parser parser = Parser.builder().extensions(extensions).build();//构建解析类
+    private static HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions)
+            .nodeRendererFactory(new CodeBlockRender())
+            .build();//构建html渲染类
 
+
+    public static String render(String str) {
+        Node parse = parser.parse(str);
+        String render = renderer.render(parse);
+        return render;
+    }
 
     public static void main(String[] args) {
         test();
@@ -47,7 +59,7 @@ public class MDUtil {
                     public AttributeProvider create(AttributeProviderContext context) {
                         return new ImageAttributeProvider();
                     }
-                }).attributeProviderFactory(new a())
+                })
                 .build();
 
         Node document = parser.parse("![text](/url.png)");
@@ -78,11 +90,6 @@ public class MDUtil {
                 .nodeRendererFactory(new HtmlNodeRendererFactory() {
                     public NodeRenderer create(HtmlNodeRendererContext context) {
                         return new IndentedCodeBlockNodeRenderer(context);
-                    }
-                }).nodeRendererFactory(new HtmlNodeRendererFactory() {
-                    @Override
-                    public NodeRenderer create(HtmlNodeRendererContext context) {
-                        return new ;
                     }
                 })
                 .build();
