@@ -69,7 +69,7 @@ public class FileFilter extends AbstractFileFilter {
                     "<script src=\"https://cdn.bootcss.com/prism/1.17.1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js\"></script>"+
                     "</body>\n" +
                     "</html>");
-            FileUtils.writeStringToFile(new File("/Users/yingjie.lu/Code/blog-java/src/main/resources/static/html/"+path.substring(33,path.length()-3)+".html"),render );
+            FileUtils.writeStringToFile(new File("/Users/yingjie.lu/Code/blog/src/main/resources/static/html/"+path.substring(33,path.length()-3)+".html"),render );
         } catch (IOException e) {
             e.printStackTrace();
         }
