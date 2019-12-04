@@ -2,6 +2,8 @@ package com.lyj.blog;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -15,6 +17,7 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.Randomness;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -63,6 +66,30 @@ class BlogApplicationTests {
         //通过client创建index并添加一个文档
         IndexResponse index = client.index(source, RequestOptions.DEFAULT);
         System.out.println(index);
+
+        //关闭连接
+        client.close();
+    }
+
+    //批量创建
+    public static void multiIndex() throws IOException {
+        //创建客户端请求
+        RestHighLevelClient client = new RestHighLevelClient(
+                RestClient.builder(new HttpHost("localhost", 9200, "http")));
+
+        //创建index请求
+        BulkRequest request = new BulkRequest();
+        //添加数据
+        request.add(new IndexRequest("posts", "doc", String.valueOf(Randomness.get().nextInt()))
+                .source(XContentType.JSON,"field", "foo"));
+        request.add(new IndexRequest("posts", "doc", String.valueOf(Randomness.get().nextInt()))
+                .source(XContentType.JSON,"field", "bar"));
+        request.add(new IndexRequest("posts", "doc", String.valueOf(Randomness.get().nextInt()))
+                .source(XContentType.JSON,"field", "baz"));
+
+        //通过client创建批量添加索引
+        BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
+        System.out.println(bulkResponse);
 
         //关闭连接
         client.close();
@@ -130,14 +157,12 @@ class BlogApplicationTests {
 
         //构造查询条件
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(QueryBuilders.fuzzyQuery("user", "sdsds"));//使用模糊查询
+        sourceBuilder.query(QueryBuilders.regexpQuery("user",".*lu.*"));//使用正则匹配查询
         sourceBuilder.from(0);
         sourceBuilder.size(5);
 
         //指定查询文档
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices("posts");
-        searchRequest.source(sourceBuilder);
+        SearchRequest searchRequest = new SearchRequest().indices("posts").source(sourceBuilder);
 
         //通过client进行查询
         SearchResponse search = client.search(searchRequest, RequestOptions.DEFAULT);
