@@ -9,12 +9,18 @@ import java.util.List;
  */
 public class ESHeader {
 
-    List<ESHeader> list;
+    public static List<ESHeader> list;
 
     String headerName;
 
-    int blogId;
+    String blogId;
 
     int level;
 
+
+    public ESHeader(String headerName, String blogId, int level) {
+        this.headerName = headerName;
+        this.blogId = blogId;
+        this.level = level;
+    }
 }

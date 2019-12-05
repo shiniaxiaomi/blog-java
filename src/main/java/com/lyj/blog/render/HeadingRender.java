@@ -1,5 +1,7 @@
 package com.lyj.blog.render;
 
+import com.lyj.blog.ESmodel.ESBlog;
+import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.model.Header;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
@@ -8,6 +10,7 @@ import org.commonmark.renderer.html.HtmlNodeRendererFactory;
 import org.commonmark.renderer.html.HtmlWriter;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,32 +39,41 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
     public void render(Node node) {
 
         Heading heading = (Heading) node;
-        System.out.println(heading.getLevel());
+        int level=heading.getLevel();
+        String headerName;
 
         //todo 可以在标题中添加标识，如果存在标识，则在大纲的标题中高亮显示（比如标题加粗的话就可以进行高亮，或者是（***））
+
         try {
             if(heading.getFirstChild() instanceof Link){
                 Link link = (Link) heading.getFirstChild();
+                Text text = (Text) link.getFirstChild();
+                headerName=text.getLiteral();
                 String url=link.getDestination();
 
                 html.tag("h"+heading.getLevel());
                 html.tag("a href='"+url+"'");
-                Text text = (Text) link.getFirstChild();
-                html.text(text.getLiteral());//获取header中的内容
+                html.text(headerName);//获取header中的内容
                 html.tag("a");
                 html.tag("/h"+heading.getLevel());
-
-                new Header(heading.getLevel(),text.getLiteral());//构建
-
-
-
             }else{
-                String headerText = ((Text) heading.getFirstChild()).getLiteral();
+                headerName= ((Text) heading.getFirstChild()).getLiteral();
 
                 html.tag("h"+heading.getLevel());
-                html.text(((Text) heading.getFirstChild()).getLiteral());//获取header中的内容
+                html.text(headerName);//获取header中的内容
                 html.tag("/h"+heading.getLevel());
             }
+
+
+            List<ESBlog> list = ESBlog.list;
+            String blogId = list.get(list.size()).getBlogId();
+            ESHeader esHeader = new ESHeader(headerName, blogId, heading.getLevel());//构建header对象
+            ESHeader.list.add(esHeader);//将所有的header对象添加到list列表中
+
+
+
+            //还在保留单个文件中的所有header
+
         }catch (Exception e){
             System.out.println("note parse error");
         }
