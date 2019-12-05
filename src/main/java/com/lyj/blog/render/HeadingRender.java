@@ -1,5 +1,6 @@
 package com.lyj.blog.render;
 
+import com.lyj.blog.model.Header;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
 import org.commonmark.renderer.html.HtmlNodeRendererContext;
@@ -37,14 +38,23 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
         Heading heading = (Heading) node;
         System.out.println(heading.getLevel());
 
+        //todo 可以在标题中添加标识，如果存在标识，则在大纲的标题中高亮显示（比如标题加粗的话就可以进行高亮，或者是（***））
         try {
             if(heading.getFirstChild() instanceof Link){
                 Link link = (Link) heading.getFirstChild();
                 String url=link.getDestination();
 
+                html.tag("h"+heading.getLevel());
                 html.tag("a href='"+url+"'");
-                html.text(((Text) link.getFirstChild()).getLiteral());//获取header中的内容
+                Text text = (Text) link.getFirstChild();
+                html.text(text.getLiteral());//获取header中的内容
                 html.tag("a");
+                html.tag("/h"+heading.getLevel());
+
+                new Header(heading.getLevel(),text.getLiteral());//构建
+
+
+
             }else{
                 String headerText = ((Text) heading.getFirstChild()).getLiteral();
 

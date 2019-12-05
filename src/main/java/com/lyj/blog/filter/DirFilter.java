@@ -1,5 +1,7 @@
 package com.lyj.blog.filter;
 
+import com.lyj.blog.model.BlogFile;
+import com.lyj.blog.util.VarUtil;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 import java.io.File;
@@ -17,6 +19,12 @@ public class DirFilter extends AbstractFileFilter {
         if(name.startsWith(".")){
             return false;
         }
+
+        BlogFile blogFile = new BlogFile(name, dir.getPath());//创建文件夹
+        VarUtil.blogFile.add(blogFile);//添加当前文件夹
+        VarUtil.blogFile=blogFile;//将当前文件夹指向到刚创建的文件夹
+
+
 //        System.out.println(name);
         return true;
     }
