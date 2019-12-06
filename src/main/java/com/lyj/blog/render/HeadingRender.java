@@ -2,6 +2,7 @@ package com.lyj.blog.render;
 
 import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
+import com.lyj.blog.file.BlogCallBack;
 import com.lyj.blog.model.Header;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
@@ -64,15 +65,17 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
                 html.tag("/h"+heading.getLevel());
             }
 
-
+            //获取到list最后一个元素，即当前文件的ESBlog对象
             List<ESBlog> list = ESBlog.list;
-            String blogId = list.get(list.size()).getBlogId();
-            ESHeader esHeader = new ESHeader(headerName, blogId, heading.getLevel());//构建header对象
-            ESHeader.list.add(esHeader);//将所有的header对象添加到list列表中
+            String blogId = list.get(list.size()-1).getBlogId();
 
-
+            //将所有的header对象添加到list列表中
+            ESHeader esHeader = new ESHeader(headerName, blogId, level);//构建header对象
+            ESHeader.addHeader(blogId,esHeader);
 
             //还在保留单个文件中的所有header
+            BlogCallBack.sb.append(headerName);
+            BlogCallBack.sb.append(",");
 
         }catch (Exception e){
             System.out.println("note parse error");

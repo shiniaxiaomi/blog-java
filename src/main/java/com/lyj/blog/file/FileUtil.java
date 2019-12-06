@@ -28,7 +28,11 @@ public class FileUtil {
             if(!accept) return;//如果不符合过滤条件，则返回
 
             if(dirOrFile!=null){
-                dirOrFile.add(new DirOrFile(file.getName(),file));
+                if(file.isFile()){
+                    dirOrFile.add(new DirOrFile(file.getName().substring(0,file.getName().length()-3),file.getPath().substring(32,file.getPath().length()-3)));
+                }else{
+                    dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(32)));
+                }
             }
 
             fileCallBack.callback(file);//文件回调
@@ -42,7 +46,14 @@ public class FileUtil {
 
         DirOrFile buff =null;
         if(dirOrFile!=null){
-            buff = new DirOrFile(file.getName(), file);//创建当前目录
+            if(file.isFile()){
+                buff = new DirOrFile(file.getName().substring(0,file.getName().length()-3), file.getPath().substring(32,file.getPath().length()-3));//创建当前目录
+//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(32,file.getPath().length()-3)));
+            }else{
+                buff = new DirOrFile(file.getName(), file.getPath().substring(32));//创建当前目录
+//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(32)));
+            }
+
             dirOrFile.add(buff);
         }
 
@@ -57,15 +68,35 @@ public class FileUtil {
     }
 
 
-    public static void main(String[] args) {
-        DirOrFile dirOrFile = new DirOrFile();
-        FileUtil.mapDir(new File("/Users/yingjie.lu/Documents/note"),
-                new DirFilter(),new BlogFilter(),
-                new DirCallBack(),new BlogCallBack(),dirOrFile);
-        System.out.println(dirOrFile);
+    //转换dir到html
+//    public static void transformDirToHtml(DirOrFile dirOrFile,StringBuilder sb) {
+//        //文件
+//        if(dirOrFile.getChild()==null){
+//            sb.append("<li>");
+//            sb.append(dirOrFile.getName());
+//            sb.append("</li>");
+//            return;
+//        }
+//
+//        //目录
+//        sb.append("<li>");
+//        sb.append(dirOrFile.getName());
+//        sb.append("<ul>");
+//        for(DirOrFile child:dirOrFile.getChild()){
+//            transformDirToHtml(child,sb);
+//        }
+//        sb.append("</ul>");
+//        sb.append("</li>");
+//    }
 
 
-    }
+//    public static void main(String[] args) {
+//        DirOrFile dirOrFile = new DirOrFile();
+//        FileUtil.mapDir(new File("/Users/yingjie.lu/Documents/note"),
+//                new DirFilter(),new BlogFilter(),
+//                new DirCallBack(),new BlogCallBack(),dirOrFile);
+//        System.out.println(dirOrFile);
+//    }
 
 
 }

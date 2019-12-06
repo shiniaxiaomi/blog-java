@@ -1,7 +1,13 @@
 package com.lyj.blog.controller;
 
+import com.lyj.blog.ESmodel.ESHeader;
+import com.lyj.blog.file.DirOrFile;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @author yingjie.lu
@@ -19,7 +25,26 @@ public class IndexController {
         return "index";
     }
 
+    @RequestMapping("blog/{path}")
+    public String blog(@PathVariable String path){
+        return "index";
+    }
 
+    //获取博客的目录
+    @RequestMapping("getDir")
+    @ResponseBody
+    public List<DirOrFile> getDir(){
+        return DirOrFile.Instance.getChild().get(0).getChild();
+    }
+
+
+    //获取对应博客的具有结构的headers
+    @RequestMapping("getHeaders/{blogId}")
+    @ResponseBody
+    public List<ESHeader> getHeaders(@PathVariable String blogId){
+        List<ESHeader> headers = ESHeader.getHeader(blogId);
+        return headers;
+    }
 
     //searchToJSON/xxx：search的精简版，只返回字符串，不返回页面，用于本地直接打开
 

@@ -1,7 +1,7 @@
 package com.lyj.blog.ESmodel;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author yingjie.lu
@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public class ESBlog {
 
-    public static List<ESBlog> list;
+    public static List<ESBlog> list=new ArrayList<>();
 
     String blogName;
 
@@ -28,5 +28,9 @@ public class ESBlog {
 
     public String getBlogId() {
         return blogId;
+    }
+
+    public void setHeaders(String headers) {
+        this.headers = headers;
     }
 }

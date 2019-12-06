@@ -11,18 +11,20 @@ import java.util.List;
  */
 public class DirOrFile {
 
+    public static DirOrFile Instance=new DirOrFile();
+
     String name;
 
-    File file;
+    String url;
 
     List<DirOrFile> child;
 
     public DirOrFile() {
     }
 
-    public DirOrFile(String name, File file) {
+    public DirOrFile(String name, String url) {
         this.name = name;
-        this.file = file;
+        this.url = url;
     }
 
     public void add(DirOrFile dirOrFile){
@@ -32,5 +34,20 @@ public class DirOrFile {
         }
 
         child.add(dirOrFile);
+    }
+
+    public List<DirOrFile> getChild() {
+        return child;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/blog");
+        sb.append(url);
+        return sb.toString();
     }
 }

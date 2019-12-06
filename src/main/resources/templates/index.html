@@ -36,10 +36,16 @@
                 padding: 15px;
             }
         }
+
+        /*将级联选择器的高度变高*/
+        .el-cascader-menu__wrap {
+            height: 300px;
+        }
     </style>
 </head>
 <body >
     <div id="app" class="markdown-body">
+
 
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -48,6 +54,8 @@
             <el-breadcrumb-item>活动详情</el-breadcrumb-item>
         </el-breadcrumb>
 
+
+        <button @click="dir_index=1">dsfsdf</button>
             <!--大纲-->
             <el-drawer
                     title="我是标题"
@@ -60,626 +68,42 @@
             <!--目录结构-->
             <el-drawer
                     title="我是外面的 Drawer"
+                    direction="rtl"
                     :visible.sync="dir_drawer"
-                    size="25%">
+                    size="40%">
                 <div>
-                    <el-drawer
-                            title="我是里面的"
-                            :append-to-body="true"
-                            visible.sync="false">
-                        <p>_(:зゝ∠)_</p>
-                    </el-drawer>
+                    <el-link>目录搜索</el-link>
                 </div>
+                <el-cascader
+                        placeholder="搜索目录"
+                        :options="blogOptions"
+                        :filter-method="filter"
+                        :show-all-levels="false"
+                        :props="blogProps"
+                        clearable
+                        :debounce="150"
+                        filterable>
+                </el-cascader>
+
+                <div>
+                    <el-link>当前标题搜索</el-link>
+                </div>
+                <el-cascader
+                        placeholder="搜索标题"
+                        :options="headerOptions"
+                        :props="headerProps"
+                        :filter-method="filter"
+                        :show-all-levels="false"
+                        clearable
+                        :debounce="150"
+                        filterable>
+                </el-cascader>
+
             </el-drawer>
 
 
         <!-- 博客内容（必须要放在最下面，不然会影响elementUI解析） -->
-        <div >
-            <h1>介绍</h1>
-            <p>SSM框架是由Spring,SpringMVC和Mybatis三大框架组合而成的,这也是目前企业中比较流行的三个框架</p>
-            <p>Spring的核心是IOC和AOP,通过IOC容器可以管理很多的JavaBean,并可以维护JavaBean之间的相互依赖关系,通过AOP可以将代码解耦,我们通过Spring的两个核心功能,可以将SpringMVC和Mybatis两大框架进行整合,得到一个具有与数据库交互的持久层和使用了MVC设计模式的Web应用的一个框架,一般称为SSM框架</p>
-            <h1>原理</h1>
-            <p>在xml项目中,使用<code>ContextLoaderListener</code>类来引导监听器启动和关闭Spring的根WebApplicationContext(Spring的根上下文);</p>
-            <p>所以,我们会在web.xml中配置<code>&lt;listener&gt;</code>标签来监听wen应用的启动</p>
-            <p>当web应用启动时,我们会加载<code>spring.xml</code>配置文件,来加载Spring的上下文,该上下文是被所有的Javabean共享的</p>
-            <blockquote>
-                <p>spring.xml中包含了Spring的上下文和Mybatis整合的内容</p>
-                <p>它会将Service层和Dao层(由Mybatis-Spring创建)的Javabean放入到spring的上下文中,这些bean是会被所有bean共享的(在Controller中共享,Dao使用了SqlSessionTemplate保证了线程安全,而Service可能会存在线程不安全问题)</p>
-                <blockquote>
-                    <p>需要注意的是在Service中尽量不要创建和使用成员变量和静态变量,这样会导致Service层在多线程环境下数据不一致,即线程不安全</p>
-                    <p>如果非要使用成员变量,可以使用ThreadLocal来解决</p>
-                </blockquote>
-            </blockquote>
-            <p>之后我们会在web.xml中配置DispatchServlet的初始化和映射,在DispatchServlet初始化时,会加载springmvc.xml,该文件会扫描Controller层,并将其放入到ServletContext(Servlet上下文)中,Controller层的Javabean只能被Servlet所共享</p>
-            <blockquote>
-                <p>ServletContext被称为子容器,而Spring的上下文被称为父容器,子容器可以读取父容器中的bean,而父容器不能读取子容器中的bean,所以父容器的bean是被所有Javabean共享的,而子容器的bean只能在子容器使用</p>
-            </blockquote>
-            <p>在扫描完Controller层之后,将扫描后的url映射关系都交由DispatchServlet,他会统筹管理这些映射,当请求访问时,会先经过DispatchServlet,询问后找到对应的映射和对应处理的适配器,然后交由适配器去处理对应的请求,然后在返回响应给用户</p>
-            <hr />
-            <p>SSM各自起到的作用:</p>
-            <ul>
-                <li>Spring: 将SpringMVC和Mybatis整合到一起,把所有的JavaBean的关系维护起来(Spring的核心IOC),然后解析注解,如@Transactional等注解,实现声明式事务(Spring的核心AOP),为我们的开发带来了极大的便利,并且没有代码入侵,而且可以随意的扩展</li>
-                <li>SpringMVC: 采用了MVC的设计模式,将请求,模型和视图分离,实现了解耦; 它在多线程的环境下,Controller层会存在线程不安全的问题,详细的解决方法可以参考<a href="D:\note\Java\Spring\SpringFramework\SpringMVC.md#5.SpringMVC的线程安全">SpringMVC中的线程安全问题</a></li>
-                <li>Mybatis: 它承担了和数据交互的任务,在和Spring整合的时候,通过Mybatis-Spring,将原本Mybatis默认的Mapper升级为通过SqlSessionTemplate来实现线程安全,即通过ThreadLocal可以保证每个线程拿到的Session都是不同的,保证了线程安全</li>
-            </ul>
-            <hr />
-            <p>在注解配置的项目中,通过Java配置类来实现去xml配置,但是这需要在Spring3.1之后才能够被支持; 从Spring 3.1开始，ContextLoaderListener支持通过ContextLoaderListener(WebApplicationContext)构造函数注入根web应用程序上下文，允许在Servlet 3.0+环境中编程配置;</p>
-            <p>即我们无需再配置web.xml,而是编写一个Java类并实现<code>WebApplicationInitializer</code>接口的<code>onStartup()</code>方法,在web项目启动时,该<code>onStartup()</code>方法会被调用,从而在<code>onStartup()</code>中进行初始化对应的容器(Spring上下文和DispatchServlet上下文),初始化的步骤就和xml项目是基本一致的,这里就不多赘述了</p>
-            <h1>基本的环境搭建</h1>
-            <h2>项目搭建</h2>
-            <p>该项目环境为使用maven管理依赖,并配置好tomcat</p>
-            <blockquote>
-                <p>该环境在XML-Demo中和注解-Demo中都需要使用到</p>
-            </blockquote>
-            <ol>
-                <li>
-                    <p>创建一个maven项目</p>
-                    <p><img src="D:\note.img\1572167797787.png" alt="1572167797787" /></p>
-                    <p><img src="D:\note.img\1572167828392.png" alt="1572167828392" /></p>
-                </li>
-                <li>
-                    <p>添加maven依赖(pom.xml文件)</p>
-                    <pre class="line-numbers"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-    &lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
-             xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-             xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
-        &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-
-        &lt;groupId&gt;com.lyj&lt;/groupId&gt;
-        &lt;artifactId&gt;SSM-Annotation&lt;/artifactId&gt;
-        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
-
-        &lt;dependencies&gt;
-            &lt;!--spring依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
-                &lt;version&gt;5.1.3.RELEASE&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--mybatis依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
-                &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
-                &lt;version&gt;3.4.6&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--spring整合mybatis依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
-                &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
-                &lt;version&gt;1.3.2&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--springMVC依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
-                &lt;version&gt;5.1.3.RELEASE&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--mysql依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;mysql&lt;/groupId&gt;
-                &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-                &lt;version&gt;5.1.47&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--spring-jdbc依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
-                &lt;version&gt;5.1.3.RELEASE&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--使得Controller中直接返回model序列化的结果--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
-                &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-                &lt;version&gt;2.10.0&lt;/version&gt;
-            &lt;/dependency&gt;
-
-            &lt;!--在纯注解-Demo中需要添加servlet-api 3.0+的依赖--&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
-                &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
-                &lt;version&gt;3.1.0&lt;/version&gt;
-                &lt;scope&gt;provided&lt;/scope&gt;
-            &lt;/dependency&gt;
-        &lt;/dependencies&gt;
-
-    &lt;/project&gt;
-    </code></pre></li>
-                <li>
-                    <p>配置tomcat</p>
-                    <p><img src="D:\note.img\1572167924834.png" alt="1572167924834" /></p>
-                    <p><img src="D:\note.img\1572167955842.png" alt="1572167955842" /></p>
-                    <p>点击Fix按钮,然后点击下方的选项</p>
-                    <p><img src="D:\note.img\1572168052961.png" alt="1572168052961" /></p>
-                    <p>将右边的Maven依赖添加到Tomcat中</p>
-                    <p><img src="D:\note.img\1572168140593.png" alt="1572168140593" /></p>
-                    <p>在项目中创建web目录以及WEB-INF和web.xml等重要的文件</p>
-                    <blockquote>
-                        <p>我们可以通过idea自带的功能来自动创建,参考下图</p>
-                    </blockquote>
-                    <p><img src="D:\note.img\1572168890701.png" alt="1572168890701" /></p>
-                    <p>点击下方的按钮,然后点击OK即可自动创建web目录</p>
-                    <p><img src="D:\note.img\1572169013573.png" alt="1572169013573" /></p>
-                    <p>然后一步finish或next即可</p>
-                </li>
-                <li>
-                    <p>创建数据库表</p>
-                    <pre class="line-numbers"><code class="language-sql">CREATE TABLE `user` (
-       `id` int(11) NOT NULL AUTO_INCREMENT,
-       `name` varchar(20) DEFAULT NULL,
-       `age` int(11) DEFAULT NULL,
-       PRIMARY KEY (`id`)
-     ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8
-    </code></pre>
-                    <p>并插入初始数据</p>
-                    <pre class="line-numbers"><code class="language-sql">insert into `user` (`id`, `name`, `age`) values('1','A','1');
-    insert into `user` (`id`, `name`, `age`) values('2','B','2');
-    insert into `user` (`id`, `name`, `age`) values('3','C','3');
-    insert into `user` (`id`, `name`, `age`) values('4','D','4');
-    insert into `user` (`id`, `name`, `age`) values('5','E','5');
-    </code></pre></li>
-            </ol>
-            <h2>创建对应的每一层模型</h2>
-            <h3>controller层</h3>
-            <pre class="line-numbers"><code class="language-java">package controller;
-
-    import model.User;
-    import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.stereotype.Controller;
-    import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.ResponseBody;
-    import service.UserService;
-
-    @Controller
-    @RequestMapping(&quot;/user&quot;)
-    public class UserController {
-
-        @Autowired
-        UserService userService;
-
-        @RequestMapping(&quot;/selectUser&quot;)
-        @ResponseBody
-        public User selectUser(int id){
-            User user = userService.selectUser(id);
-            return user;
-        }
-
-        @RequestMapping(&quot;/updateUser&quot;)
-        public String updateUser(String name,int id) throws Exception {
-            boolean b = userService.updateUser(name, id);
-            if(b){
-                return &quot;success&quot;;
-            }else{
-                return &quot;failed&quot;;
-            }
-        }
-    }
-    </code></pre>
-            <h3>dao层</h3>
-            <pre class="line-numbers"><code class="language-java">package dao;
-
-    import model.User;
-    import org.apache.ibatis.annotations.Mapper;
-    import org.apache.ibatis.annotations.Param;
-    import org.apache.ibatis.annotations.Update;
-
-    @Mapper //标记是一个接口映射类
-    public interface UserMapper {
-        @Update(&quot;update user set name=#{name} where id = #{id}&quot;)
-        int updateUser(@Param(&quot;name&quot;) String name, @Param(&quot;id&quot;) int id);
-
-        User selectUser(int id);//sql在xml中
-    }
-    </code></pre>
-            <h3>model层</h3>
-            <pre class="line-numbers"><code class="language-java">package model;
-
-    public class User{
-        int id;
-        String name;
-        int age;
-
-        //生成get和set方法才能在Controller中直接返回model序列化的结果
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getAge() {
-            return age;
-        }
-
-        public void setAge(int age) {
-            this.age = age;
-        }
-    }
-    </code></pre>
-            <h3>service层</h3>
-            <pre class="line-numbers"><code class="language-java">package service;
-
-    import dao.UserMapper;
-    import model.User;
-    import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.stereotype.Service;
-    import org.springframework.transaction.annotation.Transactional;
-
-    @Service
-    public class UserService {
-
-        @Autowired
-        private UserMapper userMapper;
-
-        @Transactional
-        public boolean updateUser(String name,int id) throws Exception {
-            int i = userMapper.updateUser(name, id);
-            return i==1?true:false;
-        }
-
-        public User selectUser(int id){
-            User user = userMapper.selectUser(id);
-            return user;
-        }
-
-    }
-    </code></pre>
-            <h3>mapper.xml映射文件</h3>
-            <pre class="line-numbers"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-    &lt;!DOCTYPE mapper
-            PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
-            &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
-    &lt;!-- 1.mapper:根标签; 2.namespace：命名空间,保证命名空间唯一即可 --&gt;
-    &lt;mapper namespace=&quot;dao.UserMapper&quot;&gt;
-
-        &lt;select id=&quot;selectUser&quot; parameterType=&quot;Integer&quot; resultType=&quot;model.User&quot;&gt;
-            SELECT * from user where id=#{id}
-        &lt;/select&gt;
-
-    &lt;/mapper&gt;
-    </code></pre>
-            <h3>创建视图页面</h3>
-            <p>failed.jsp</p>
-            <pre class="line-numbers"><code class="language-html">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
-    &lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;Title&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-    失败
-    &lt;/body&gt;
-    &lt;/html&gt;
-    </code></pre>
-            <p>success.jsp</p>
-            <pre class="line-numbers"><code class="language-html">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
-    &lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;Title&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-    成功
-    &lt;/body&gt;
-    &lt;/html&gt;
-    </code></pre>
-            <h1>XML-Demo</h1>
-            <h2>环境搭建-项目搭建</h2>
-            <p>参考上一节的环境搭建-项目搭建</p>
-            <h2>创建配置文件</h2>
-            <h3>web.xml</h3>
-            <p>该文件在创建web项目的时候就会被自动创建,所以我们编辑即可</p>
-            <pre class="line-numbers"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-    &lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
-             xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-             xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot;
-             version=&quot;3.1&quot;&gt;
-
-        &lt;!--监听启动时加载容器--&gt;
-        &lt;listener&gt;
-            &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
-        &lt;/listener&gt;
-
-        &lt;!--配置父容器(共享)--&gt;
-        &lt;context-param&gt;
-            &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
-            &lt;param-value&gt;classpath:spring.xml&lt;/param-value&gt;
-        &lt;/context-param&gt;
-
-        &lt;!--定义中央处理器DispatcherServlet--&gt;
-        &lt;servlet&gt;
-            &lt;servlet-name&gt;DispatcherServlet&lt;/servlet-name&gt;
-            &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
-            &lt;!--配置子容器(独享,子容器找不到bean会去父容器找)--&gt;
-            &lt;!--指定springmvc.xml配置文件--&gt;
-            &lt;init-param&gt;
-                &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
-                &lt;param-value&gt;classpath:springmvc.xml&lt;/param-value&gt;
-            &lt;/init-param&gt;
-            &lt;!--在启动时就装配好该servlet,而并不是请求的时候才去创建--&gt;
-            &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
-        &lt;/servlet&gt;
-
-        &lt;!--拦截所有请求--&gt;
-        &lt;servlet-mapping&gt;
-            &lt;servlet-name&gt;DispatcherServlet&lt;/servlet-name&gt;
-            &lt;url-pattern&gt;/&lt;/url-pattern&gt;
-        &lt;/servlet-mapping&gt;
-
-        &lt;!-- 编码过滤器 --&gt;
-        &lt;filter&gt;
-            &lt;filter-name&gt;encoding&lt;/filter-name&gt;
-            &lt;filter-class&gt;
-                org.springframework.web.filter.CharacterEncodingFilter
-            &lt;/filter-class&gt;
-            &lt;init-param&gt;
-                &lt;param-name&gt;encoding&lt;/param-name&gt;
-                &lt;param-value&gt;UTF-8&lt;/param-value&gt;
-            &lt;/init-param&gt;
-            &lt;init-param&gt;
-                &lt;param-name&gt;forceEncoding&lt;/param-name&gt;
-                &lt;param-value&gt;true&lt;/param-value&gt;
-            &lt;/init-param&gt;
-        &lt;/filter&gt;
-        &lt;filter-mapping&gt;
-            &lt;filter-name&gt;encoding&lt;/filter-name&gt;
-            &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-        &lt;/filter-mapping&gt;
-
-    &lt;/web-app&gt;
-    </code></pre>
-            <h3>spring.xml</h3>
-            <p>在项目的根路径下创建该文件,用来配置spring的上下文,并将mybatis整合进来</p>
-            <blockquote>
-                <p>spring扫描的是Service层和Dao层(由Mybatis生成并放入Spring容器)</p>
-            </blockquote>
-            <pre class="line-numbers"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-    &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-           xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-           xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
-           xmlns:mybatis=&quot;http://mybatis.org/schema/mybatis-spring&quot;
-           xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd&quot;&gt;
-
-        &lt;!--配置数据源--&gt;
-        &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
-            &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;&gt;&lt;/property&gt;
-            &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://127.0.0.1:3306/test&quot;&gt;&lt;/property&gt;
-            &lt;property name=&quot;username&quot; value=&quot;root&quot;&gt;&lt;/property&gt;
-            &lt;property name=&quot;password&quot; value=&quot;123456&quot;&gt;&lt;/property&gt;
-        &lt;/bean&gt;
-
-        &lt;!--公共的service层--&gt;
-        &lt;!--开启spring的注解扫描,扫描service层--&gt;
-        &lt;context:component-scan base-package=&quot;service&quot;/&gt;
-
-        &lt;!--=========================Mybatis和Spring的整合========================--&gt;
-        &lt;!--公共的Dao层--&gt;
-        &lt;!--扫描标注有@Mapper的接口映射文件
-        生成的Mapper对象里面会包含sqlSession(SqlSessionTemplate),mapperInterface(映射文件接口类)--&gt;
-        &lt;mybatis:scan base-package=&quot;dao.**&quot; /&gt;
-
-        &lt;!--注入sqlSessionFactory(Mybatis-Spring整合的核心,
-        通过sqlSessionFactory来产生线程安全的sqlSession,即SqlSessionTemplate)--&gt;
-        &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
-            &lt;!--指定数据源--&gt;
-            &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
-            &lt;!--可以指定mybatis的配置文件,用来覆盖一些默认的配置--&gt;
-            &lt;!--&lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;&gt;&lt;/property&gt;--&gt;
-            &lt;!--指定mapper.xml映射文件路径--&gt;
-            &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:mappers/**/*.xml&quot; /&gt;
-        &lt;/bean&gt;
-        &lt;!--============================================================--&gt;
-
-        &lt;!--创建事务管理器--&gt;
-        &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
-            &lt;constructor-arg ref=&quot;dataSource&quot; /&gt;
-        &lt;/bean&gt;
-        &lt;!--开启spring事务,并指定事务管理器--&gt;
-        &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
-    &lt;/beans&gt;
-    </code></pre>
-            <h3>springmvc.xml</h3>
-            <p>在项目的根路径下创建该文件,用来配置springmvc(Servlet)的上下文,该上下文不共享</p>
-            <blockquote>
-                <p>springmvc扫描的是Controller层</p>
-            </blockquote>
-            <pre class="line-numbers"><code class="language-xml">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-           xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-           xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
-           xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
-           xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-        http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-4.3.xsd&quot;&gt;
-
-        &lt;!--扫描@Controller注解--&gt;
-        &lt;context:component-scan base-package=&quot;controller&quot;/&gt;
-
-        &lt;!--配置视图解析器--&gt;
-        &lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
-            &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/views/&quot;/&gt;
-            &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot;/&gt;
-        &lt;/bean&gt;
-
-        &lt;!--开启mvc注解扫描(会扫描如@ResponseBody等)--&gt;
-        &lt;mvc:annotation-driven/&gt;
-
-    &lt;/beans&gt;
-    </code></pre>
-            <h2>创建对应的每一层</h2>
-            <p>对应的目录结构:</p>
-            <p><img src="D:\note.img\1572167190304.png" alt="1572167190304" /></p>
-            <p><a href="D:\note\Java\Spring\Spring整合(SSM框架).md#3.2.创建对应的每一层模型">参考本文的环境搭建内容</a></p>
-            <h2>启动项目</h2>
-            <p>启动tomcat,并访问<code>http://localhost:8080/user/selectUser?id=1</code></p>
-            <h1>注解-Demo</h1>
-            <h2>环境搭建</h2>
-            <p>参考上一节的环境搭建</p>
-            <h2>创建配置类</h2>
-            <p>在src目录下创建一个config目录,在config目录下分别创建以下两个个配置类和一个启动类:</p>
-            <ol>
-                <li>WebInitializer.java(启动类)</li>
-                <li>SpringConfig.java(配置类)</li>
-                <li>SpringMVCConfig.java(配置类)</li>
-            </ol>
-            <h3>WebInitializer替代web.xml文件</h3>
-            <p>WebInitializer类实现了<code>WebApplicationInitializer</code>接口,可以看做是Web.xml的替代</p>
-            <blockquote>
-                <p>当有了WebInitializer类后,在WEB-INF下的web.xml文件就无作用了,所有web.xml文件可删可不删</p>
-            </blockquote>
-            <p>在加载Web项目的时候会加载WebApplicationInitializer接口实现类，并调用onStartup()方法</p>
-            <pre class="line-numbers"><code class="language-java">package config;
-
-    import org.springframework.web.WebApplicationInitializer;
-    import org.springframework.web.context.ContextLoaderListener;
-    import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-    import org.springframework.web.servlet.DispatcherServlet;
-
-    import javax.servlet.ServletContext;
-    import javax.servlet.ServletRegistration;
-
-    //Webinitializer实现WebApplicationInitializer这个类的Onstartup方法，可以看做是Web.xml的替代
-    //它是一个接口，在其中可以添加Servlet，Listener等
-    //在加载Web项目的时候会加载WebApplicationInitializer接口实现类，并调用onStartup()方法
-    public class WebInitializer implements WebApplicationInitializer {
-
-        //通过实现WebApplicationInitializer的onStartup()方法,来初始化Spring和DispatchServlet的上下文
-        //该方法可以获取到servletContext
-        public void onStartup(ServletContext container) {
-            //创建根容器(Spring的上下文)
-            AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-            rootContext.register(SpringConfig.class);
-
-            //添加监听器,管理根容器的生命周期
-            container.addListener(new ContextLoaderListener(rootContext));
-
-            //创建DispatchServlet的上下文
-            AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
-            dispatcherContext.register(SpringMVCConfig.class);
-
-            //注册和映射DispatchServlet
-            ServletRegistration.Dynamic dispatcher = container.addServlet(&quot;dispatcher&quot;, new DispatcherServlet(dispatcherContext));
-            dispatcher.addMapping(&quot;/&quot;);
-            dispatcher.setLoadOnStartup(1);
-        }
-    }
-    </code></pre>
-            <h3>SpringConfig来替代spring.xml文件</h3>
-            <p>该配置文件包含了Spring的上下文,并且整合了Mybatis</p>
-            <blockquote>
-                <p>将Service层和Dao层(通过Mybatis-Spring扫描产生)的JavaBean保存在Spring上下文中,供所有类使用(全部共享)</p>
-            </blockquote>
-            <pre class="line-numbers"><code class="language-java">package config;
-
-    import org.apache.ibatis.session.SqlSessionFactory;
-    import org.mybatis.spring.SqlSessionFactoryBean;
-    import org.mybatis.spring.annotation.MapperScan;
-    import org.springframework.context.annotation.Bean;
-    import org.springframework.context.annotation.ComponentScan;
-    import org.springframework.context.annotation.Configuration;
-    import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-    import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-    import org.springframework.jdbc.datasource.DriverManagerDataSource;
-    import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-    import javax.sql.DataSource;
-
-    @Configuration
-    @ComponentScan(&quot;service&quot;) //开启spring的注解扫描,扫描service层
-    @MapperScan(&quot;dao&quot;) //扫描标注有@Mapper的接口映射文件,通过Mybatis-Spring扫描并创建bean
-    @EnableTransactionManagement //开始事务注解
-    public class SpringConfig {
-
-        //配置数据源
-        @Bean
-        public DataSource dataSource(){
-            DriverManagerDataSource dataSource = new DriverManagerDataSource();
-            dataSource.setDriverClassName(&quot;com.mysql.jdbc.Driver&quot;);
-            dataSource.setUrl(&quot;jdbc:mysql://127.0.0.1:3306/test&quot;);
-            dataSource.setUsername(&quot;root&quot;);
-            dataSource.setPassword(&quot;123456&quot;);
-            return dataSource;
-        }
-
-
-        //配置sqlSessionFactory(Mybatis-Spring整合的核心)
-        //通过sqlSessionFactory来产生线程安全的sqlSession,即SqlSessionTemplate)
-        @Bean
-        public SqlSessionFactory sqlSessionFactory() throws Exception {
-            SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-            factoryBean.setDataSource(dataSource());
-
-            // 指定并设置xml映射文件路径
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            factoryBean.setMapperLocations(resolver.getResources(&quot;classpath:mappers/**/*.xml&quot;));
-
-            return factoryBean.getObject();
-        }
-
-
-        //配置事务管理器
-        @Bean
-        public DataSourceTransactionManager transactionManager(){
-            DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-            transactionManager.setDataSource(dataSource());
-            return transactionManager;
-        }
-
-    }
-    </code></pre>
-            <h3>SpringMVCConfig来替代springmvc.xml文件</h3>
-            <p>该配置文件包含了DispatchServlet的上下文</p>
-            <pre class="line-numbers"><code class="language-java">package config;
-
-    import org.springframework.context.annotation.Bean;
-    import org.springframework.context.annotation.ComponentScan;
-    import org.springframework.context.annotation.Configuration;
-    import org.springframework.web.servlet.ViewResolver;
-    import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-    import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
-    @Configuration
-    @ComponentScan(&quot;controller&quot;) //扫描@Controller注解
-    @EnableWebMvc //开启mvc注解(会扫描如@ResponseBody等)
-    public class SpringMVCConfig {
-
-        //配置视图解析器
-        @Bean
-        public ViewResolver internalResourceViewResolver(){
-            InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-            viewResolver.setPrefix(&quot;/WEB-INF/views/&quot;);
-            viewResolver.setSuffix(&quot;.jsp&quot;);
-            return viewResolver;
-        }
-    }
-    </code></pre>
-            <h2>创建对应的每一层</h2>
-            <p>对应的目录结构:</p>
-            <p><img src="D:\note.img\1572187364808.png" alt="1572187364808" /></p>
-            <p><a href="D:\note\Java\Spring\Spring整合(SSM框架).md#3.2.创建对应的每一层模型">参考本文的环境搭建内容</a></p>
-            <h2>启动项目</h2>
-            <p>启动tomcat,并访问<code>http://localhost:8080/user/selectUser?id=1</code></p>
-            <h1>参考文档</h1>
-            <p><a href="https://blog.csdn.net/a4019069/article/details/79507718">csdn-博客</a></p>
-            <p><a href="https://blog.csdn.net/crazylzxlzx/article/details/53648625">spring中的web上下文，spring上下文，springmvc上下文区别(超详细)</a></p>
-            <p><a href="https://www.cnblogs.com/MrRightZhao/p/7851565.html">ssm框架搭建流程及原理分析</a></p>
-            <p><a href="https://blog.csdn.net/qq_22067469/article/details/82253194">SSM框架整合基于JavaConfig配置方式</a></div>
-        </div>
+        <div><h1>11221312312312</h1></div>
 
 
 
@@ -688,7 +112,10 @@
     </div>
 </body>
 <!--vue.js-->
-<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+<!--<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>-->
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.common.dev.js"></script><!--开发的时候使用生产模式-->
+<!--axios.js-->
+<script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
 <!--element.js-->
 <script src="https://cdn.bootcss.com/element-ui/2.12.0/index.js"></script>
 <!--代码高亮js-->
@@ -708,23 +135,54 @@
     var W_key=119;
     document.onkeypress=function (event) {
         var key = event.keyCode;
-        console.log(key)
         if(event.shiftKey && (key==q_key || key==Q_key)){
             vue.outline_drawer=!vue.outline_drawer;
+            event.preventDefault();//阻止默认事件
         }else if(event.shiftKey && (key==w_key || key==W_key)){
             vue.dir_drawer=!vue.dir_drawer;
+            event.preventDefault();//阻止默认事件
         }
-        event.preventDefault();//阻止默认事件
     }
+
 
     var vue=new Vue({
         el: '#app',
         data: {
-            outline_drawer:false,
+            outline_drawer: false,
             dir_drawer: false,
+            blogProps: {
+                value:'file',
+                label:'name',
+                children:'child'
+            },
+            headerProps:{
+                value:'headerName',
+                label:'headerName',
+                children:'child'
+            },
+            blogOptions: [],
+            headerOptions:[],
+        },
+        created:function(){
+            var _this=this;
+            axios.get('/getDir')
+                .then(function (response) {
+                    _this.blogOptions=response.data;
+                });
+            axios.get('/getHeaders/afcbf031-8e4e-4233-83f5-5799e678611a')
+                .then(function (response) {
+                    response.data.map(item=>{item.child=null})
+                    console.log(response.data)
+                    _this.headerOptions=response.data;
+                });
         },
         methods:{
-
+            filter:function (node,keyword) {
+                //过滤不区分大小写
+                if(node.label.toLowerCase().indexOf(keyword.toLowerCase())!=-1){
+                    return true;
+                }
+            }
         }
 
     })
