@@ -1,12 +1,17 @@
 package com.lyj.blog.controller;
 
+import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.DirOrFile;
+import org.apache.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -21,13 +26,23 @@ import java.util.List;
 public class IndexController {
 
     @RequestMapping("/")
-    public String index(){
-        return "index";
+    public ModelAndView index(){
+        ModelAndView index = new ModelAndView("index");
+        return index;
     }
 
-    @RequestMapping("blog/{path}")
-    public String blog(@PathVariable String path){
-        return "index";
+    @RequestMapping("blog/**")
+    public ModelAndView blog(HttpServletRequest servletRequest){
+
+
+        ModelAndView index = new ModelAndView("index");
+
+        String s = ESBlog.htmlMap.get(servletRequest.getServletPath().substring(5));
+        if(s==null){
+            index.setViewName("dirSearch");
+        }
+        index.addObject("blog",s);
+        return index;
     }
 
     //获取博客的目录
@@ -39,10 +54,10 @@ public class IndexController {
 
 
     //获取对应博客的具有结构的headers
-    @RequestMapping("getHeaders/{blogId}")
+    @RequestMapping("getHeaders/**")
     @ResponseBody
-    public List<ESHeader> getHeaders(@PathVariable String blogId){
-        List<ESHeader> headers = ESHeader.getHeader(blogId);
+    public List<ESHeader> getHeaders(HttpServletRequest servletRequest){
+        List<ESHeader> headers = ESHeader.getHeader(servletRequest.getServletPath().substring(11));
         return headers;
     }
 

@@ -26,15 +26,19 @@ public class BlogCallBack implements CallBack {
 
             //标记文件开始
             //将blog添加到list中，并设置好id
-            ESBlog esBlog = new ESBlog(file.getName(), UUID.randomUUID().toString(), file.getPath());
+            String blogId=file.getPath().substring(32,file.getPath().length()-3);
+            ESBlog esBlog = new ESBlog(file.getName(), blogId, file.getPath());
             ESBlog.list.add(esBlog);//将blog保存到最后一个元素
             sb=new StringBuilder();//每次渲染新文件时就重新创建一个StringBuilder
 
             //将笔记进行渲染
             String html = MDUtil.render(note);//笔记html
-            //在一个文件渲染完成后，将本文件的headers添加到对应的blog对象的headers属性中
+
+            //保存每个blog对应渲染后的html
+            ESBlog.htmlMap.put(blogId,html);
 
             //标记文件结束
+            //在一个文件渲染完成后，将本文件的headers添加到对应的blog对象的headers属性中
             esBlog.setHeaders(sb.toString());//将所有的headers设置进去
 
         } catch (IOException e) {

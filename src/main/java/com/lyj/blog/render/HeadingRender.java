@@ -52,7 +52,7 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
                 headerName=text.getLiteral();
                 String url=link.getDestination();
 
-                html.tag("h"+heading.getLevel());
+                html.tag("h"+heading.getLevel()+" id='"+headerName+"'"+" class='header'");
                 html.tag("a href='"+url+"'");
                 html.text(headerName);//获取header中的内容
                 html.tag("a");
@@ -60,7 +60,7 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
             }else{
                 headerName= ((Text) heading.getFirstChild()).getLiteral();
 
-                html.tag("h"+heading.getLevel());
+                html.tag("h"+heading.getLevel()+" id='"+headerName+"'"+" class='header'");
                 html.text(headerName);//获取header中的内容
                 html.tag("/h"+heading.getLevel());
             }

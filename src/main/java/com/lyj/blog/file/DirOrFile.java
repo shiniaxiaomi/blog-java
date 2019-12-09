@@ -45,9 +45,11 @@ public class DirOrFile {
     }
 
     public String getUrl() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("/blog");
-        sb.append(url);
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("/blog");
+//        sb.append(url);
+//        return sb.toString();
+
+        return url;
     }
 }

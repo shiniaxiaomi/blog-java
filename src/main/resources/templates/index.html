@@ -39,13 +39,59 @@
 
         /*将级联选择器的高度变高*/
         .el-cascader-menu__wrap {
-            height: 300px;
+            height: 325px;
         }
+
+        /*设置抽屉的body的滚动条*/
+        .el-drawer__body {
+            -webkit-box-flex: 1;
+            flex: 1;
+            overflow: auto;
+        }
+
+        /*设置抽屉的header的间距*/
+        .el-drawer__header {
+            margin-bottom: 10px;
+            padding: 10px 10px 0;
+        }
+
+        .header{
+            display: block;
+        }
+
+        .header:hover {
+            background-color:yellow;
+        }
+
+        .el-link.el-link--danger:hover {
+            color: #409EFF;
+        }
+
+        .side-header1{
+            margin-left: 20px;
+        }
+        .side-header2{
+            margin-left: 40px;
+        }
+        .side-header3{
+            margin-left: 60px;
+        }
+        .side-header4{
+            margin-left: 80px;
+        }
+        .side-header5{
+            margin-left: 100px;
+        }
+        .side-header6{
+            margin-left: 120px;
+        }
+
+
+
     </style>
 </head>
 <body >
     <div id="app" class="markdown-body">
-
 
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -54,57 +100,67 @@
             <el-breadcrumb-item>活动详情</el-breadcrumb-item>
         </el-breadcrumb>
 
+        <!--大纲-->
+        <el-drawer
+                title="大纲"
+                :visible.sync="outline_drawer"
+                direction="ltr"
+                :size="outline_size">
 
-        <button @click="dir_index=1">dsfsdf</button>
-            <!--大纲-->
-            <el-drawer
-                    title="我是标题"
-                    :visible.sync="outline_drawer"
-                    direction="ltr"
-                    size="20%"
-                    :modal="false">
-                <span>我来啦!</span>
-            </el-drawer>
-            <!--目录结构-->
-            <el-drawer
-                    title="我是外面的 Drawer"
-                    direction="rtl"
-                    :visible.sync="dir_drawer"
-                    size="40%">
-                <div>
-                    <el-link>目录搜索</el-link>
-                </div>
-                <el-cascader
-                        placeholder="搜索目录"
-                        :options="blogOptions"
-                        :filter-method="filter"
-                        :show-all-levels="false"
-                        :props="blogProps"
-                        clearable
-                        :debounce="150"
-                        filterable>
-                </el-cascader>
+            <el-link v-for="(item,index) in headerOptions"
+                     :key="index"
+                     :class="'header side-header'+item.levle"
+                     :href="'#'+item.value"
+                     :type="item.label.indexOf('（***）')==-1?'default':'danger'">
+                {{ item.label.indexOf('（***）')==-1?item.label:item.label.substring(0,item.label.length-5) }}
+            </el-link>
 
-                <div>
-                    <el-link>当前标题搜索</el-link>
-                </div>
-                <el-cascader
-                        placeholder="搜索标题"
-                        :options="headerOptions"
-                        :props="headerProps"
-                        :filter-method="filter"
-                        :show-all-levels="false"
-                        clearable
-                        :debounce="150"
-                        filterable>
-                </el-cascader>
+        </el-drawer>
 
-            </el-drawer>
+
+        <!--目录结构-->
+        <el-drawer
+                title="全能搜索"
+                direction="ttb"
+                :visible.sync="dir_drawer"
+                size="45%">
+            <div>
+                <el-link>目录搜索</el-link>
+            </div>
+            <el-cascader
+                    placeholder="搜索目录"
+                    :options="blogOptions"
+                    :filter-method="filter"
+                    :props="blogProps"
+<!--                    @blur="clickDirNode"-->
+<!--                    ref="aaa"-->
+                    @change="nodeClick"
+                    clearable
+                    :debounce="150"
+                    filterable>
+            </el-cascader>
+
+            <div>
+                <el-link>当前标题搜索</el-link>
+            </div>
+
+            <el-select v-model="headerValue" clearable filterable placeholder="请选择" @change="headerNodeClick">
+                <el-option
+                        v-for="(item,index) in headerOptions"
+                        :key="index"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+
+
+        </el-drawer>
 
 
         <!-- 博客内容（必须要放在最下面，不然会影响elementUI解析） -->
-        <div><h1>11221312312312</h1></div>
-
+        <div>
+            ${blog!}
+        </div>
 
 
 
@@ -135,6 +191,8 @@
     var W_key=119;
     document.onkeypress=function (event) {
         var key = event.keyCode;
+
+        console.log(key,event.shiftKey,event.altKey,event.ctrlKey)
         if(event.shiftKey && (key==q_key || key==Q_key)){
             vue.outline_drawer=!vue.outline_drawer;
             event.preventDefault();//阻止默认事件
@@ -145,23 +203,75 @@
     }
 
 
+    //手机端工具类
+    const DomUtils={
+        isMobile(){
+            return window.innerWidth<576;
+        },
+        addGestureEvent(callback){
+            let startPoint=null,endPoint=null;
+            document.addEventListener("touchstart",function (event) {
+                let touch = event.targetTouches[0];
+                startPoint={
+                    x:touch.clientX,
+                    y:touch.clientY
+                };
+            });
+            document.addEventListener("touchend",function (event) {
+                //防止其他有滚动条的元素扰乱滑动监听
+                if(event.target.tagName==="PRE" || event.target.tagName==="SPAN" || event.target.tagName==="CODE")return;
+
+                let touch = event.changedTouches[0];
+                endPoint={
+                    x:touch.clientX,
+                    y:touch.clientY
+                };
+                //计算手势
+                let xDistance=endPoint.x-startPoint.x;
+                let yDistance=endPoint.y-startPoint.y;
+                if(Math.abs(xDistance)>Math.abs(yDistance)){
+                    if(Math.abs(xDistance)>window.innerWidth*(1/5.0)){
+                        callback(xDistance>0?"right":"left");
+                    }
+                }else{
+                    if(Math.abs(yDistance)>window.innerHeight*(1/3.0)){
+                        callback(yDistance>0?"down":"top");
+                    }
+                }
+            })
+        }
+    }
+
+
+    //手机端监听左右滑动事件
+    if(DomUtils.isMobile()){
+        DomUtils.addGestureEvent(function (event) {
+            if(event==="right"){
+                // console.log("right")
+                vue.outline_drawer=true;
+            }else if(event==="left"){
+                console.log("left")
+                vue.dir_drawer=true;
+            }
+        })
+    }
+
+
     var vue=new Vue({
         el: '#app',
         data: {
             outline_drawer: false,
             dir_drawer: false,
             blogProps: {
-                value:'file',
+                value:'url',
                 label:'name',
-                children:'child'
+                children:'child',
             },
-            headerProps:{
-                value:'headerName',
-                label:'headerName',
-                children:'child'
-            },
+            headerValue:'',
             blogOptions: [],
             headerOptions:[],
+            headerTree:{},
+            outline_size:DomUtils.isMobile()==true?'60%':'20%'
         },
         created:function(){
             var _this=this;
@@ -169,12 +279,17 @@
                 .then(function (response) {
                     _this.blogOptions=response.data;
                 });
-            axios.get('/getHeaders/afcbf031-8e4e-4233-83f5-5799e678611a')
-                .then(function (response) {
-                    response.data.map(item=>{item.child=null})
-                    console.log(response.data)
-                    _this.headerOptions=response.data;
+            var headers=document.getElementsByClassName("header");
+            for(var i=0;i<headers.length;i++){
+                var header=headers[i];
+                //添加标题搜索数据
+                _this.headerOptions.push({
+                    value:header.textContent,
+                    label:header.textContent,
+                    levle:header.tagName.charAt(1)
                 });
+            }
+
         },
         methods:{
             filter:function (node,keyword) {
@@ -182,7 +297,19 @@
                 if(node.label.toLowerCase().indexOf(keyword.toLowerCase())!=-1){
                     return true;
                 }
-            }
+            },
+            nodeClick:function (node) {
+                // window.location="/blog"+node[node.length-1];
+            },
+            //标题跳转
+            headerNodeClick:function (node) {
+                window.location="#"+node;
+                this.dir_drawer=false;
+            },
+            // clickDirNode:function () {
+            //     console.log(111)
+            // }
+
         }
 
     })
