@@ -16,7 +16,8 @@
     <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
     <!-- import 代码块工具条 CSS -->
     <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
-
+    <!-- import header CSS -->
+    <link href="/header.css" rel="stylesheet">
     <style>
         .markdown-body {
             box-sizing: border-box;
@@ -54,67 +55,80 @@
             margin-bottom: 10px;
             padding: 10px 10px 0;
         }
+        .el-drawer__body {
+            -webkit-box-flex: 1;
+            flex: 1;
+            overflow: auto;
+            margin-bottom: 20px;
+        }
 
         .header{
             display: block;
         }
 
-        .header:hover {
+        .header:hover  {
             background-color:yellow;
         }
 
-        .el-link.el-link--danger:hover {
+        /*将最后的面包屑中的样式去除*/
+        .el-breadcrumb__item:last-child .el-breadcrumb__inner a{
+            font-weight: 700;
+            color: #606266;
+            cursor: pointer;
+        }
+        .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover{
+            font-weight: 700;
             color: #409EFF;
-        }
-
-        .side-header1{
-            margin-left: 20px;
-        }
-        .side-header2{
-            margin-left: 40px;
-        }
-        .side-header3{
-            margin-left: 60px;
-        }
-        .side-header4{
-            margin-left: 80px;
-        }
-        .side-header5{
-            margin-left: 100px;
-        }
-        .side-header6{
-            margin-left: 120px;
+            cursor: pointer;
         }
 
 
-
-    </style>
+</style>
 </head>
 <body >
     <div id="app" class="markdown-body">
 
-        <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-        </el-breadcrumb>
+        <el-row>
+            <el-col :xs="24" :span="12">
+                <el-breadcrumb>
+                    <el-breadcrumb-item>
+                        <el-link href="/">首页</el-link>
+                    </el-breadcrumb-item>
+                    <el-breadcrumb-item v-for="item in pathArr">
+                        <el-link :href="item.url">{{item.value}}</el-link>
+                    </el-breadcrumb-item>
+                </el-breadcrumb>
+            </el-col>
+            <el-col :xs="0" :span="12">
+                <el-breadcrumb separator="|">
+                    <el-breadcrumb-item>
+                        <el-link @click="outline_drawer=true">大纲</el-link>
+                    </el-breadcrumb-item>
+                    <el-breadcrumb-item>
+                        <el-link @click="dir_drawer=true">搜索</el-link>
+                    </el-breadcrumb-item>
+                </el-breadcrumb>
+            </el-col>
+        </el-row>
+
 
         <!--大纲-->
         <el-drawer
+                id="header"
                 title="大纲"
                 :visible.sync="outline_drawer"
                 direction="ltr"
                 :size="outline_size">
 
-            <el-link v-for="(item,index) in headerOptions"
-                     :key="index"
-                     :class="'header side-header'+item.levle"
-                     :href="'#'+item.value"
-                     :type="item.label.indexOf('（***）')==-1?'default':'danger'">
-                {{ item.label.indexOf('（***）')==-1?item.label:item.label.substring(0,item.label.length-5) }}
-            </el-link>
-
+            <div style="margin: 10px 10px">
+                <el-link v-for="(item,index) in headerOptions"
+                         :key="index"
+                         :class="'header side-header'+item.levle"
+                         :href="'#'+item.value"
+                         :type="item.label.indexOf('（***）')==-1?'default':'danger'">
+                    {{ item.label.indexOf('（***）')==-1?item.label:item.label.substring(0,item.label.length-5) }}
+                </el-link>
+            </div>
         </el-drawer>
 
 
@@ -132,8 +146,6 @@
                     :options="blogOptions"
                     :filter-method="filter"
                     :props="blogProps"
-<!--                    @blur="clickDirNode"-->
-<!--                    ref="aaa"-->
                     @change="nodeClick"
                     clearable
                     :debounce="150"
@@ -158,12 +170,9 @@
 
 
         <!-- 博客内容（必须要放在最下面，不然会影响elementUI解析） -->
-        <div>
+        <div id="blog">
             ${blog!}
         </div>
-
-
-
 
     </div>
 </body>
@@ -201,6 +210,80 @@
             event.preventDefault();//阻止默认事件
         }
     }
+
+    var vue=new Vue({
+        el: '#app',
+        data: {
+            outline_drawer: false,
+            dir_drawer: false,
+            blogProps: {
+                value:'url',
+                label:'name',
+                children:'child',
+            },
+            headerValue:'',
+            blogOptions: [],
+            headerOptions:[],
+            headerTree:{},
+            outline_size: window.innerWidth<576==true?'60%':'20%',
+            pathArr: [],
+        },
+        created:function(){
+            var _this=this;
+            //获取目录数据
+            axios.get('/getDir')
+                .then(function (response) {
+                    _this.blogOptions=response.data;
+                });
+            //获取header数据
+            var headers=document.getElementsByClassName("header");
+            for(var i=0;i<headers.length;i++){
+                var header=headers[i];
+                //添加标题搜索数据
+                _this.headerOptions.push({
+                    value:header.textContent,
+                    label:header.textContent,
+                    levle:header.tagName.charAt(1)
+                });
+            }
+            //获取面包屑数据
+            var path=decodeURI(window.location.pathname);
+            var arr=path.substring(6).split("/");
+            var buff="/blog";
+            for(var i=0;i<arr.length;i++){
+                var item=arr[i];
+                buff+="/"+item;
+                //最后一个不需要生成链接
+                if(i==arr.length-1){
+                    buff="javascrpit:void(0);";
+                }
+                this.pathArr.push({
+                    value:item,
+                    url:buff
+                });
+            }
+        },
+        methods:{
+            filter:function (node,keyword) {
+                //过滤不区分大小写
+                if(node.label.toLowerCase().indexOf(keyword.toLowerCase())!=-1){
+                    return true;
+                }
+            },
+            nodeClick:function (node) {
+                window.location="/blog"+node[node.length-1];
+            },
+            //标题跳转
+            headerNodeClick:function (node) {
+                window.location="#"+node;
+                this.dir_drawer=false;
+            },
+
+        }
+
+    })
+
+
 
 
     //手机端工具类
@@ -247,7 +330,6 @@
     if(DomUtils.isMobile()){
         DomUtils.addGestureEvent(function (event) {
             if(event==="right"){
-                // console.log("right")
                 vue.outline_drawer=true;
             }else if(event==="left"){
                 console.log("left")
@@ -255,63 +337,5 @@
             }
         })
     }
-
-
-    var vue=new Vue({
-        el: '#app',
-        data: {
-            outline_drawer: false,
-            dir_drawer: false,
-            blogProps: {
-                value:'url',
-                label:'name',
-                children:'child',
-            },
-            headerValue:'',
-            blogOptions: [],
-            headerOptions:[],
-            headerTree:{},
-            outline_size:DomUtils.isMobile()==true?'60%':'20%'
-        },
-        created:function(){
-            var _this=this;
-            axios.get('/getDir')
-                .then(function (response) {
-                    _this.blogOptions=response.data;
-                });
-            var headers=document.getElementsByClassName("header");
-            for(var i=0;i<headers.length;i++){
-                var header=headers[i];
-                //添加标题搜索数据
-                _this.headerOptions.push({
-                    value:header.textContent,
-                    label:header.textContent,
-                    levle:header.tagName.charAt(1)
-                });
-            }
-
-        },
-        methods:{
-            filter:function (node,keyword) {
-                //过滤不区分大小写
-                if(node.label.toLowerCase().indexOf(keyword.toLowerCase())!=-1){
-                    return true;
-                }
-            },
-            nodeClick:function (node) {
-                // window.location="/blog"+node[node.length-1];
-            },
-            //标题跳转
-            headerNodeClick:function (node) {
-                window.location="#"+node;
-                this.dir_drawer=false;
-            },
-            // clickDirNode:function () {
-            //     console.log(111)
-            // }
-
-        }
-
-    })
 </script>
 </html>

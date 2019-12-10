@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <title>index</title>
+
+    <!-- import element CSS -->
+    <link href="https://cdn.bootcss.com/element-ui/2.12.0/theme-chalk/index.css" rel="stylesheet">
+
+    <style>
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="markdown-body">
+        <el-input
+                placeholder="输入关键字进行过滤"
+                v-model="filterText">
+        </el-input>
+        <el-tree
+                class="filter-tree"
+                :data="data"
+                :props="defaultProps"
+                default-expand-all
+                :expand-on-click-node="false"
+                :filter-node-method="filterNode"
+                @node-click="handleNodeClick"
+                ref="tree">
+        </el-tree>
+    </div>
+
+</body>
+
+<!--vue.js-->
+<!--<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>-->
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.common.dev.js"></script><!--开发的时候使用生产模式-->
+<!--element.js-->
+<script src="https://cdn.bootcss.com/element-ui/2.12.0/index.js"></script>
+<script>
+    var vue=new Vue({
+        el: '#app',
+        data: {
+            filterText: '',
+            data: [{
+                label: '一级 1',
+                children: [{
+                    label: '二级 1-1',
+                    children: [{
+                        label: '三级 1-1-1'
+                    }]
+                }]
+            }, {
+                label: '一级 2',
+                children: [{
+                    label: '二级 2-1',
+                    children: [{
+                        label: '三级 2-1-1'
+                    }]
+                }, {
+                    label: '二级 2-2',
+                    children: [{
+                        label: '三级 2-2-1'
+                    }]
+                }]
+            }, {
+                label: '一级 3',
+                children: [{
+                    label: '二级 3-1',
+                    children: [{
+                        label: '三级 3-1-1'
+                    }]
+                }, {
+                    label: '二级 3-2',
+                    children: [{
+                        label: '三级 3-2-1'
+                    }]
+                }]
+            }],
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            }
+        },
+        created:function(){
+
+        },
+        watch: {
+            filterText(val) {
+                this.$refs.tree.filter(val);
+            }
+        },
+        methods:{
+            handleNodeClick(data) {
+                console.log(data);
+            },
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
+            handleNodeClick(data,node,nodes) {
+                console.log(data);
+            }
+        }
+
+    })
+</script>
+
+</html>

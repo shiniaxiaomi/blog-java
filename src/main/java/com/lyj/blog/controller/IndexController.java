@@ -28,6 +28,8 @@ public class IndexController {
     @RequestMapping("/")
     public ModelAndView index(){
         ModelAndView index = new ModelAndView("index");
+        String s = ESBlog.htmlMap.get("/README");
+        index.addObject("blog",s);
         return index;
     }
 
@@ -39,6 +41,7 @@ public class IndexController {
 
         String s = ESBlog.htmlMap.get(servletRequest.getServletPath().substring(5));
         if(s==null){
+
             index.setViewName("dirSearch");
         }
         index.addObject("blog",s);
@@ -48,8 +51,16 @@ public class IndexController {
     //获取博客的目录
     @RequestMapping("getDir")
     @ResponseBody
-    public List<DirOrFile> getDir(){
-        return DirOrFile.Instance.getChild().get(0).getChild();
+    public List<DirOrFile> getDir(String path){
+        List<DirOrFile> child = DirOrFile.Instance.getChild().get(0).getChild();
+        if("/".equals(path)){
+            return child;
+        }else{
+
+        }
+
+
+        return ;
     }
 
 
