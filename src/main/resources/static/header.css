@@ -1,20 +1,20 @@
 .side-header1{
-    margin-left: 20px;
+    margin-left: 10px;
 }
 .side-header2{
-    margin-left: 40px;
+    margin-left: 20px;
 }
 .side-header3{
-    margin-left: 60px;
+    margin-left: 30px;
 }
 .side-header4{
-    margin-left: 80px;
+    margin-left: 40px;
 }
 .side-header5{
-    margin-left: 100px;
+    margin-left: 50px;
 }
 .side-header6{
-    margin-left: 120px;
+    margin-left: 60px;
 }
 
 /* 设置计数器(非递归情况) */
@@ -40,37 +40,37 @@
 /*正文*/
 #blog h1::after{
     counter-increment: section-main-h1;
-    content: '   no:' counter(section-main-h1) ;
+    content: '   ' counter(section-main-h1) ;
     visibility: hidden;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 #blog h2::after{
     counter-increment: section-main-h2;
-    content: '   no:' counter(section-main-h1) "." counter(section-main-h2);
+    content: '   ' counter(section-main-h1) "." counter(section-main-h2);
     visibility: hidden;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 #blog h3::after{
     counter-increment: section-main-h3;
-    content: '   no:' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3);
+    content: '   ' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3);
     visibility: hidden;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 #blog h4::after{
     counter-increment: section-main-h4;
-    content: '   no:' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3) "." counter(section-main-h4);
+    content: '   ' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3) "." counter(section-main-h4);
     visibility: hidden;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 #blog h5::after{
     counter-increment: section-main-h5;
-    content: '   no:' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3) "." counter(section-main-h4) "." counter(section-main-h5);
+    content: '   ' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3) "." counter(section-main-h4) "." counter(section-main-h5);
     visibility: hidden;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 #blog h6::after{
     counter-increment: section-main-h6;
-    content: '   no:' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3) "." counter(section-main-h4) "." counter(section-main-h5) "." counter(section-main-h6);
+    content: '   ' counter(section-main-h1) "." counter(section-main-h2) "." counter(section-main-h3) "." counter(section-main-h4) "." counter(section-main-h5) "." counter(section-main-h6);
     visibility: hidden;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }

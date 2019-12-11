@@ -66,7 +66,7 @@
             display: block;
         }
 
-        .header:hover  {
+        #header .header:hover  {
             background-color:yellow;
         }
 
@@ -82,25 +82,36 @@
             cursor: pointer;
         }
 
+        /*分割线*/
+        .el-divider--horizontal {
+            display: block;
+            height: 1px;
+            width: 100%;
+            margin: 6px 0;
+        }
+
 
 </style>
 </head>
 <body >
     <div id="app" class="markdown-body">
 
-        <el-row>
+        <el-row type="flex" justify="space-between">
             <el-col :xs="24" :span="12">
-                <el-breadcrumb>
+                    <el-breadcrumb>
+                        <el-breadcrumb-item>
+                            <el-link href="/dirSearch">目录</el-link>
+                        </el-breadcrumb-item>
+                        <el-breadcrumb-item v-for="item in pathArr">
+                            <el-link :href="item.url">{{item.value}}</el-link>
+                        </el-breadcrumb-item>
+                    </el-breadcrumb>
+            </el-col>
+            <el-col :xs="0" :span="5" style="align-content: end">
+                <el-breadcrumb separator="|">
                     <el-breadcrumb-item>
                         <el-link href="/">首页</el-link>
                     </el-breadcrumb-item>
-                    <el-breadcrumb-item v-for="item in pathArr">
-                        <el-link :href="item.url">{{item.value}}</el-link>
-                    </el-breadcrumb-item>
-                </el-breadcrumb>
-            </el-col>
-            <el-col :xs="0" :span="12">
-                <el-breadcrumb separator="|">
                     <el-breadcrumb-item>
                         <el-link @click="outline_drawer=true">大纲</el-link>
                     </el-breadcrumb-item>
@@ -112,68 +123,104 @@
         </el-row>
 
 
-        <!--大纲-->
+        <!--导航-->
         <el-drawer
                 id="header"
-                title="大纲"
+                title="导航"
                 :visible.sync="outline_drawer"
                 direction="ltr"
+                :modal="false"
                 :size="outline_size">
 
-            <div style="margin: 10px 10px">
-                <el-link v-for="(item,index) in headerOptions"
-                         :key="index"
-                         :class="'header side-header'+item.levle"
-                         :href="'#'+item.value"
-                         :type="item.label.indexOf('（***）')==-1?'default':'danger'">
-                    {{ item.label.indexOf('（***）')==-1?item.label:item.label.substring(0,item.label.length-5) }}
-                </el-link>
-            </div>
+            <el-tabs type="border-card" :stretch="true">
+                <!--大纲-->
+                <el-tab-pane label="大纲">
+                    <el-input v-model="headerSearchInput" clearable placeholder="搜索大纲" @input="headerSearch"></el-input>
+                    <el-link v-for="(item,index) in headerData"
+                             :key="index"
+                             :class="'header side-header'+item.levle"
+                             :href="'#'+item.value"
+                             :underline="false"
+                             :type="item.label.indexOf('（***）')==-1?'default':'danger'">
+                        {{ item.label.indexOf('（***）')==-1?item.label:item.label.substring(0,item.label.length-5) }}
+                    </el-link>
+                </el-tab-pane>
+                <!--目录-->
+                <el-tab-pane label="目录">
+                    <el-input
+                            placeholder="输入关键字进行过滤"
+                            v-model="filterDirText">
+                    </el-input>
+                    <el-tree
+                            class="filter-tree"
+                            :data="dirData"
+                            :props="defaultDirProps"
+                            default-expand-all
+                            :expand-on-click-node="false"
+                            :filter-node-method="filterNode"
+                            @node-click="handleNodeClick"
+                            ref="tree">
+                    </el-tree>
+                </el-tab-pane>
+            </el-tabs>
         </el-drawer>
 
 
         <!--目录结构-->
         <el-drawer
                 title="全能搜索"
-                direction="ttb"
+                direction="rtl"
                 :visible.sync="dir_drawer"
-                size="45%">
-            <div>
-                <el-link>目录搜索</el-link>
-            </div>
-            <el-cascader
-                    placeholder="搜索目录"
-                    :options="blogOptions"
-                    :filter-method="filter"
-                    :props="blogProps"
-                    @change="nodeClick"
-                    clearable
-                    :debounce="150"
-                    filterable>
-            </el-cascader>
+                :size="dir_size">
 
-            <div>
-                <el-link>当前标题搜索</el-link>
-            </div>
+            <el-tabs type="border-card" :stretch="true">
+                <!--搜索全部-->
+                <el-tab-pane label="搜索全部">
+                    <el-input placeholder="搜索标题名称" v-model="searchAllHeaderName" @input="allHeaderNameSearch">
+                        <template slot="prepend">标题名称</template>
+                    </el-input>
+                    <el-input placeholder="搜索笔记内容" v-model="searchAllNoteText" @input="allNoteTextSearch">
+                        <template slot="prepend">笔记内容</template>
+                    </el-input>
+                    <el-input placeholder="搜索笔记名称" v-model="searchAllNoteName" @input="allNoteNameSearch">
+                        <template slot="prepend">笔记名称</template>
+                    </el-input>
 
-            <el-select v-model="headerValue" clearable filterable placeholder="请选择" @change="headerNodeClick">
-                <el-option
-                        v-for="(item,index) in headerOptions"
-                        :key="index"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
+                    <!-- 展示搜索出来的数据 -->
+<!--                    <div v-for="item in searchAllHeaderData">-->
+<!--                        <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">-->
+<!--                            {{item.sourceAsMap.level}}. {{item.sourceAsMap.headerName}}-->
+<!--                        </el-link>-->
+<!--                        <el-link type="info" :underline="false" style="display: block">{{item.sourceAsMap.blogId}}</el-link>-->
+<!--                        <el-divider></el-divider>-->
+<!--                    </div>-->
 
+<!--                    <div style="overflow:auto;height: 300px">-->
+<!--                        <ul class="infinite-list" v-infinite-scroll="load" >-->
+<!--                            <li v-for="i in count" class="infinite-list-item">{{ i }}</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </el-tab-pane>
+                <!--搜索所有标题-->
+                <el-tab-pane label="搜索所有标题">
+                    <el-input v-model="searchAllHeaderInput" clearable placeholder="搜索所有标题" @input="searchAllHeader"></el-input>
+                    <div v-for="item in searchAllHeaderData">
+                        <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
+                            {{item.sourceAsMap.level}}. {{item.sourceAsMap.headerName}}
+                        </el-link>
+                        <el-link type="info" :underline="false" style="display: block">{{item.sourceAsMap.blogId}}</el-link>
+                        <el-divider></el-divider>
+                    </div>
+                </el-tab-pane>
+
+            </el-tabs>
 
         </el-drawer>
+    </div>
 
-
-        <!-- 博客内容（必须要放在最下面，不然会影响elementUI解析） -->
-        <div id="blog">
-            ${blog!}
-        </div>
-
+    <!-- 博客内容（放在app外面，避免被vue解析） -->
+    <div id="blog" class="markdown-body" style="padding-top: 0px">
+        ${blog!}
     </div>
 </body>
 <!--vue.js-->
@@ -214,45 +261,72 @@
     var vue=new Vue({
         el: '#app',
         data: {
+            //outline
+            headerSearchInput:"",
+            headerData:[],
+            headerBuff:[],
             outline_drawer: false,
-            dir_drawer: false,
-            blogProps: {
-                value:'url',
-                label:'name',
-                children:'child',
-            },
-            headerValue:'',
-            blogOptions: [],
-            headerOptions:[],
-            headerTree:{},
             outline_size: window.innerWidth<576==true?'60%':'20%',
+
+            //dir
+            filterDirText:"",
+            defaultDirProps: {
+                children: 'child',
+                label: 'name',
+                value:'url'
+            },
+            dirData:[],
+            dir_drawer: false,
+            dir_size: window.innerWidth<576==true?'70%':'30%',
+
+            //面包屑
             pathArr: [],
+
+            //search-header
+            searchAllHeaderInput:"",
+            searchAllHeaderData:[],
+
+            //search-all
+            searchAllHeaderName:"",
+            searchAllNoteName:"",
+            searchAllNoteText:"",
+            searchAllData:[],
+
+
+            searchAllInput:"",
+            count: 40
+        },
+        watch: {
+            //导航栏中目录过滤
+            filterDirText(val) {
+                this.$refs.tree.filter(val);
+            }
         },
         created:function(){
             var _this=this;
             //获取目录数据
             axios.get('/getDir')
                 .then(function (response) {
-                    _this.blogOptions=response.data;
+                    _this.dirData=response.data;
                 });
-            //获取header数据
+            //获取header数据,并保存到headerBuff和headerData中
             var headers=document.getElementsByClassName("header");
             for(var i=0;i<headers.length;i++){
                 var header=headers[i];
                 //添加标题搜索数据
-                _this.headerOptions.push({
+                _this.headerData.push({
                     value:header.textContent,
                     label:header.textContent,
                     levle:header.tagName.charAt(1)
                 });
+                _this.headerBuff=_this.headerData;//保存一份数据
             }
             //获取面包屑数据
             var path=decodeURI(window.location.pathname);
             var arr=path.substring(6).split("/");
-            var buff="/blog";
             for(var i=0;i<arr.length;i++){
                 var item=arr[i];
-                buff+="/"+item;
+                var buff="/dirSearch/"+item;
                 //最后一个不需要生成链接
                 if(i==arr.length-1){
                     buff="javascrpit:void(0);";
@@ -262,28 +336,106 @@
                     url:buff
                 });
             }
+
         },
         methods:{
-            filter:function (node,keyword) {
-                //过滤不区分大小写
-                if(node.label.toLowerCase().indexOf(keyword.toLowerCase())!=-1){
-                    return true;
+
+            load () {
+                this.count += 5
+                console.log("1221312")
+            },
+            //大纲搜索
+            headerSearch:debounce(function () {
+                if(this.headerSearchInput!=""){
+                    this.headerData=[];
+                    this.headerBuff.map(item=>{
+                        if(item.label.toLowerCase().indexOf(this.headerSearchInput.toLowerCase())!=-1){
+                            this.headerData.push(item);
+                        }
+                    })
+                }else{
+                    this.headerData=this.headerBuff;
+                }
+            },200),
+            //搜索全部header
+            searchAllHeader:debounce(function () {
+                var _this=this;
+                if(this.searchAllHeaderInput!=""){
+                    this.searchAllHeaderData=[];
+                    //查询所有header
+                    axios.get('/searchAllHeader/'+this.searchAllHeaderInput)
+                        .then(function (response) {
+                            console.log(response.data)
+                            _this.searchAllHeaderData=response.data;
+                        });
+                }else{
+                    this.searchAllHeaderData=[];
+                }
+            },200),
+            //全局搜索
+            //查询所有标题
+            allHeaderNameSearch:debounce(function () {
+                var _this=this;
+                //查询所有header
+                axios.get('/searchAll/'+this.searchAllHeaderName)
+                    .then(function (response) {
+                        console.log(response.data)
+                        _this.searchAllData=response.data;
+                    });
+            },200),
+            //查询所有笔记名称
+            allNoteNameSearch:debounce(function () {
+                var _this=this;
+                //查询所有header
+                axios.get('/searchAll?header='+this.searchAllHeaderName+'&text='+this.searchAllNoteText+'&name='+this.searchAllNoteName)
+                    .then(function (response) {
+                        console.log(response.data)
+                        _this.searchAllData=response.data;
+                    });
+            },200),
+            //查询所有笔记内容
+            allNoteTextSearch:debounce(function () {
+                var _this=this;
+                //查询所有header
+                axios.get('/searchAll?header='+this.searchAllHeaderName+'&text='+this.searchAllNoteText+'&name='+this.searchAllNoteName)
+                    .then(function (response) {
+                        console.log(response.data)
+                        _this.searchAllData=response.data;
+                    });
+
+            },200),
+            //导航栏中目录过滤
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+            },
+            //导航栏中目录点击
+            handleNodeClick(data,node,nodes) {
+                if(node.isLeaf){
+                    window.location="/blog"+data.url;
                 }
             },
-            nodeClick:function (node) {
-                window.location="/blog"+node[node.length-1];
-            },
-            //标题跳转
-            headerNodeClick:function (node) {
-                window.location="#"+node;
-                this.dir_drawer=false;
-            },
-
         }
 
     })
 
 
+
+    //限流函数
+    function debounce(func, wait) {
+        // wait：500ms；func：被频繁触发的事件
+        let timeout;
+        return function () {
+            let context = this;
+            let args = arguments;
+            let later = () => {
+                timeout = null;
+                func.apply(context, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        }
+    }
 
 
     //手机端工具类

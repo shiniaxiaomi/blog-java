@@ -20,6 +20,10 @@ public class VarUtil {
 
     public static BlogFile blogFile=blogRoot;
 
+    public static final String notePath="/Users/yingjie.lu/Documents/note";
 
+    public static int getNotePathLength(){
+        return notePath.length();
+    }
 
 }
