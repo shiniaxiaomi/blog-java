@@ -129,7 +129,7 @@
                 title="导航"
                 :visible.sync="outline_drawer"
                 direction="ltr"
-                :modal="false"
+                :modal="true"
                 :size="outline_size">
 
             <el-tabs type="border-card" :stretch="true">
@@ -176,24 +176,17 @@
             <el-tabs type="border-card" :stretch="true">
                 <!--搜索全部-->
                 <el-tab-pane label="搜索全部">
-                    <el-input placeholder="搜索标题名称" v-model="searchAllHeaderName" @input="allHeaderNameSearch">
-                        <template slot="prepend">标题名称</template>
-                    </el-input>
-                    <el-input placeholder="搜索笔记内容" v-model="searchAllNoteText" @input="allNoteTextSearch">
-                        <template slot="prepend">笔记内容</template>
-                    </el-input>
-                    <el-input placeholder="搜索笔记名称" v-model="searchAllNoteName" @input="allNoteNameSearch">
-                        <template slot="prepend">笔记名称</template>
-                    </el-input>
+                    <el-input v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
+                    <div v-for="item in searchAllData">
+                        <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
+                            {{item.sourceAsMap.blogName}}：{{item.sourceAsMap.headerName}}
+                        </el-link>
 
-                    <!-- 展示搜索出来的数据 -->
-<!--                    <div v-for="item in searchAllHeaderData">-->
-<!--                        <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">-->
-<!--                            {{item.sourceAsMap.level}}. {{item.sourceAsMap.headerName}}-->
-<!--                        </el-link>-->
-<!--                        <el-link type="info" :underline="false" style="display: block">{{item.sourceAsMap.blogId}}</el-link>-->
-<!--                        <el-divider></el-divider>-->
-<!--                    </div>-->
+                        <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">
+                            {{item.sourceAsMap.headerContent.length>200?item.sourceAsMap.headerContent.substring(0,100):item.sourceAsMap.headerContent}}
+                        </el-link>
+                        <el-divider></el-divider>
+                    </div>
 
 <!--                    <div style="overflow:auto;height: 300px">-->
 <!--                        <ul class="infinite-list" v-infinite-scroll="load" >-->
@@ -206,9 +199,9 @@
                     <el-input v-model="searchAllHeaderInput" clearable placeholder="搜索所有标题" @input="searchAllHeader"></el-input>
                     <div v-for="item in searchAllHeaderData">
                         <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
-                            {{item.sourceAsMap.level}}. {{item.sourceAsMap.headerName}}
+                            {{item.sourceAsMap.headerName}}
                         </el-link>
-                        <el-link type="info" :underline="false" style="display: block">{{item.sourceAsMap.blogId}}</el-link>
+                        <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">{{item.sourceAsMap.blogId}}</el-link>
                         <el-divider></el-divider>
                     </div>
                 </el-tab-pane>
@@ -287,13 +280,9 @@
             searchAllHeaderData:[],
 
             //search-all
-            searchAllHeaderName:"",
-            searchAllNoteName:"",
-            searchAllNoteText:"",
+            searchAllInput:"",
             searchAllData:[],
 
-
-            searchAllInput:"",
             count: 40
         },
         watch: {
@@ -373,36 +362,19 @@
                 }
             },200),
             //全局搜索
-            //查询所有标题
-            allHeaderNameSearch:debounce(function () {
+            //查询所有内容
+            searchAll:debounce(function () {
                 var _this=this;
-                //查询所有header
-                axios.get('/searchAll/'+this.searchAllHeaderName)
-                    .then(function (response) {
-                        console.log(response.data)
-                        _this.searchAllData=response.data;
-                    });
-            },200),
-            //查询所有笔记名称
-            allNoteNameSearch:debounce(function () {
-                var _this=this;
-                //查询所有header
-                axios.get('/searchAll?header='+this.searchAllHeaderName+'&text='+this.searchAllNoteText+'&name='+this.searchAllNoteName)
-                    .then(function (response) {
-                        console.log(response.data)
-                        _this.searchAllData=response.data;
-                    });
-            },200),
-            //查询所有笔记内容
-            allNoteTextSearch:debounce(function () {
-                var _this=this;
-                //查询所有header
-                axios.get('/searchAll?header='+this.searchAllHeaderName+'&text='+this.searchAllNoteText+'&name='+this.searchAllNoteName)
-                    .then(function (response) {
-                        console.log(response.data)
-                        _this.searchAllData=response.data;
-                    });
-
+                if(this.searchAllInput!=""){
+                    this.searchAllData=[];
+                    axios.get('/searchAll/'+this.searchAllInput)
+                        .then(function (response) {
+                            console.log(response.data)
+                            _this.searchAllData=response.data;
+                        });
+                }else{
+                    this.searchAllData=[];
+                }
             },200),
             //导航栏中目录过滤
             filterNode(value, data) {
@@ -418,7 +390,6 @@
         }
 
     })
-
 
 
     //限流函数
@@ -445,6 +416,7 @@
         },
         addGestureEvent(callback){
             let startPoint=null,endPoint=null;
+            var arr=["TD","TH","PRE","SPAN","CODE"];//遇到这些元素不执行滑动操作
             document.addEventListener("touchstart",function (event) {
                 let touch = event.targetTouches[0];
                 startPoint={
@@ -453,8 +425,14 @@
                 };
             });
             document.addEventListener("touchend",function (event) {
+                // console.log(event.target.tagName)
+
                 //防止其他有滚动条的元素扰乱滑动监听
-                if(event.target.tagName==="PRE" || event.target.tagName==="SPAN" || event.target.tagName==="CODE")return;
+                for(var i=0;i<arr.length;i++){
+                    if(event.target.tagName===arr[i]){
+                        return;
+                    }
+                }
 
                 let touch = event.changedTouches[0];
                 endPoint={
@@ -484,7 +462,6 @@
             if(event==="right"){
                 vue.outline_drawer=true;
             }else if(event==="left"){
-                console.log("left")
                 vue.dir_drawer=true;
             }
         })

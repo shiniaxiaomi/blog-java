@@ -1,6 +1,7 @@
 package com.lyj.blog.service;
 
 import com.lyj.blog.file.*;
+import com.lyj.blog.util.ElasticseachClientUtil;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,10 @@ public class BlogService {
                 new DirFilter(),new BlogFilter(),
                 new DirCallBack(),new BlogCallBack(),DirOrFile.Instance);
 
+        ElasticseachClientUtil.deleteIndex("header");
 
         //批量添加header数据到elasticsearch
         elasticsearchService.addHeaderBulk();
-        //批量添加blog数据到elasticsearch
-        elasticsearchService.addBlogBulk();
     }
 
 

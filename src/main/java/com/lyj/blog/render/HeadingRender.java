@@ -67,19 +67,58 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
 
             //获取到list最后一个元素，即当前文件的ESBlog对象
             List<ESBlog> list = ESBlog.list;
-            String blogId = list.get(list.size()-1).getBlogId();
+            ESBlog esBlog = list.get(list.size() - 1);
+            String blogId = esBlog.getBlogId();
+            String blogName= esBlog.getBlogName();
 
             //将所有的header对象添加到list列表中
-            ESHeader esHeader = new ESHeader(headerName, blogId, level);//构建header对象
+            //将header和header中的内容取出来
+            StringBuilder sb=new StringBuilder();
+            toHtml(sb,heading.getNext());
+
+            ESHeader esHeader = new ESHeader(headerName, blogId,blogName,sb.toString(), level);//构建header对象
             ESHeader.addHeader(blogId,esHeader);
 
             //还在保留单个文件中的所有header
-            BlogCallBack.sb.append(headerName);
-            BlogCallBack.sb.append(",");
+//            BlogCallBack.sb.append(headerName);
+//            BlogCallBack.sb.append(",");
 
         }catch (Exception e){
+            e.printStackTrace();
             System.out.println("note parse error");
         }
+
+    }
+
+    /**
+     * 将header节点之间的内容读取出来
+     * @param sb
+     * @param node
+     */
+    public void toHtml(StringBuilder sb,Node node){
+
+        //如果到了下一个header，则返回
+        if(node instanceof Heading){
+            return;
+        }
+
+        if(node==null){
+            return;
+        }
+
+
+
+        if(node instanceof FencedCodeBlock){
+            sb.append(((FencedCodeBlock)node).getLiteral());
+            sb.append("\n");
+        }else if(node instanceof Text){
+            sb.append(((Text)node).getLiteral());
+            sb.append("\n");
+        }else{
+            toHtml(sb,node.getFirstChild());//访问子节点
+        }
+
+        toHtml(sb,node.getNext());//访问下一个节点
 
     }
 

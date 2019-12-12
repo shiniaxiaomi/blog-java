@@ -13,14 +13,8 @@ import org.springframework.data.elasticsearch.client.RestClients;
  */
 
 @Configuration
-//@EnableJpaRepositories("com.lyj.blog.ESmodel")
 public class ElasticsearchConfig {
 
-//    @Bean
-//    EntityManagerFactory entityManagerFactory() {
-//        // …
-//        return null;
-//    }
 
     //配置client客户端
     @Bean

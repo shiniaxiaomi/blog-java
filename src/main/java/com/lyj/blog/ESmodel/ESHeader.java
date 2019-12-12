@@ -1,5 +1,7 @@
 package com.lyj.blog.ESmodel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +20,20 @@ public class ESHeader {
 
     String blogId;
 
+    String blogName;
+
+    //返回json时不发送该字段内容
+    @JsonIgnore
+    String headerContent;//header下的笔记内容
+
     int level;
 
 
-    public ESHeader(String headerName, String blogId, int level) {
+    public ESHeader(String headerName, String blogId, String blogName, String headerContent, int level) {
         this.headerName = headerName;
         this.blogId = blogId;
+        this.blogName = blogName;
+        this.headerContent = headerContent;
         this.level = level;
     }
 
@@ -53,5 +63,13 @@ public class ESHeader {
 
     public int getLevel() {
         return level;
+    }
+
+    public String getHeaderContent() {
+        return headerContent;
+    }
+
+    public String getBlogName() {
+        return blogName;
     }
 }
