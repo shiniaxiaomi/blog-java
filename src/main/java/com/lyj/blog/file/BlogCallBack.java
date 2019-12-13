@@ -2,6 +2,7 @@ package com.lyj.blog.file;
 
 import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.util.MDUtil;
+import com.lyj.blog.util.VarUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class BlogCallBack implements CallBack {
 
             //标记文件开始
             //将blog添加到list中，并设置好id
-            String blogId=file.getPath().substring(32,file.getPath().length()-3);
+            String blogId=file.getPath().substring(VarUtil.getNotePathLength(),file.getPath().length()-3);
             ESBlog esBlog = new ESBlog(file.getName(), blogId,note, file.getPath());
             ESBlog.list.add(esBlog);//将blog保存到最后一个元素
 //            sb=new StringBuilder();//每次渲染新文件时就重新创建一个StringBuilder

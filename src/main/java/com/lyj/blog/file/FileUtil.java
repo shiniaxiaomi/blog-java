@@ -1,5 +1,7 @@
 package com.lyj.blog.file;
 
+import com.lyj.blog.util.VarUtil;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -29,9 +31,9 @@ public class FileUtil {
 
             if(dirOrFile!=null){
                 if(file.isFile()){
-                    dirOrFile.add(new DirOrFile(file.getName().substring(0,file.getName().length()-3),file.getPath().substring(32,file.getPath().length()-3)));
+                    dirOrFile.add(new DirOrFile(file.getName().substring(0,file.getName().length()-3),file.getPath().substring(VarUtil.getNotePathLength(),file.getPath().length()-3)));
                 }else{
-                    dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(32)));
+                    dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(VarUtil.getNotePathLength())));
                 }
             }
 
@@ -47,11 +49,11 @@ public class FileUtil {
         DirOrFile buff =null;
         if(dirOrFile!=null){
             if(file.isFile()){
-                buff = new DirOrFile(file.getName().substring(0,file.getName().length()-3), file.getPath().substring(32,file.getPath().length()-3));//创建当前目录
-//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(32,file.getPath().length()-3)));
+                buff = new DirOrFile(file.getName().substring(0,file.getName().length()-3), file.getPath().substring(VarUtil.getNotePathLength(),file.getPath().length()-3));//创建当前目录
+//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(,file.getPath().length()-3)));
             }else{
-                buff = new DirOrFile(file.getName(), file.getPath().substring(32));//创建当前目录
-//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(32)));
+                buff = new DirOrFile(file.getName(), file.getPath().substring(VarUtil.getNotePathLength()));//创建当前目录
+//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(VarUtil.getNotePathLength())));
             }
 
             dirOrFile.add(buff);
