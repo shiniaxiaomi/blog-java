@@ -38,10 +38,15 @@ public class BlogService {
 
         //是否清除和添加elasticsearch的数据
         if (true) {
-            ElasticseachClientUtil.deleteIndex("header");
+            try {
+                ElasticseachClientUtil.deleteIndex("header");
+            } catch (IOException e) {
+                System.out.println("还未创建header索引");
+            }
 
             //批量添加header数据到elasticsearch
             elasticsearchService.addHeaderBulk();
+
         }
     }
 
