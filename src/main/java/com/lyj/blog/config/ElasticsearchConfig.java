@@ -1,6 +1,7 @@
 package com.lyj.blog.config;
 
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -15,13 +16,16 @@ import org.springframework.data.elasticsearch.client.RestClients;
 @Configuration
 public class ElasticsearchConfig {
 
+    @Value("${elasticsearch.domin}")
+    private String domain;
+
 
     //配置client客户端
     @Bean
     RestHighLevelClient client() {
 
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
+                .connectedTo(domain+":9200")
                 .build();
 
         return RestClients.create(clientConfiguration).rest();
