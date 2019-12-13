@@ -38,10 +38,10 @@ public class BlogService {
 
         //是否清除和添加elasticsearch的数据
         if (true) {
-//            boolean existIndex = ElasticseachClientUtil.existIndex("header");
-//            if(existIndex){
-//                ElasticseachClientUtil.deleteIndex("header");
-//            }
+            boolean existIndex = elasticsearchService.existIndex("header");
+            if(existIndex){
+                elasticsearchService.deleteIndex("header");
+            }
 
             //批量添加header数据到elasticsearch
             elasticsearchService.addHeaderBulk();

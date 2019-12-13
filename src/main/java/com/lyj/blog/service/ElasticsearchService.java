@@ -3,6 +3,7 @@ package com.lyj.blog.service;
 import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.util.VarUtil;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -10,8 +11,10 @@ import org.elasticsearch.action.search.MultiSearchRequest;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.Randomness;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.*;
@@ -106,4 +109,17 @@ public class ElasticsearchService {
         SearchResponse search = client.search(searchRequest, RequestOptions.DEFAULT);
         return search.getHits().getHits();
     }
+
+    //删除索引
+    public void deleteIndex(String index) throws IOException {
+        DeleteIndexRequest request = new DeleteIndexRequest(index);
+        AcknowledgedResponse deleteIndexResponse = client.indices().delete(request, RequestOptions.DEFAULT);
+    }
+
+    //查询是否存在索引
+    public boolean existIndex(String index) throws IOException {
+        GetIndexRequest request = new GetIndexRequest("header");
+        return client.indices().exists(request, RequestOptions.DEFAULT);
+    }
+
 }

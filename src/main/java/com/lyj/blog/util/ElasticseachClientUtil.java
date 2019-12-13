@@ -5,8 +5,11 @@ import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
@@ -15,9 +18,15 @@ import java.io.IOException;
  * @version 1.0
  * @date 2019/12/12 2:22 下午
  */
+
+@Component
 public class ElasticseachClientUtil {
 
-    public static RestHighLevelClient client=getClient();
+//    public static RestHighLevelClient client=getClient();
+
+
+    @Autowired
+    public static RestHighLevelClient client;
 
     //创建client
     private static RestHighLevelClient getClient(){
@@ -28,15 +37,15 @@ public class ElasticseachClientUtil {
     }
 
     //删除索引
-    public static void deleteIndex(String index) throws IOException {
-        DeleteIndexRequest request = new DeleteIndexRequest(index);
-        AcknowledgedResponse deleteIndexResponse = client.indices().delete(request, RequestOptions.DEFAULT);
-    }
-
-    public static boolean existIndex(String index) throws IOException {
-        GetIndexRequest request = new GetIndexRequest("header");
-        return client.indices().exists(request, RequestOptions.DEFAULT);
-    }
+//    public static void deleteIndex(String index) throws IOException {
+//        DeleteIndexRequest request = new DeleteIndexRequest(index);
+//        AcknowledgedResponse deleteIndexResponse = client.indices().delete(request, RequestOptions.DEFAULT);
+//    }
+//
+//    public static boolean existIndex(String index) throws IOException {
+//        GetIndexRequest request = new GetIndexRequest("header");
+//        return client.indices().exists(request, RequestOptions.DEFAULT);
+//    }
 
     public static void main(String[] args) {
 
