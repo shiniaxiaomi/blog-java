@@ -3,6 +3,7 @@ package com.lyj.blog.service;
 import com.lyj.blog.file.*;
 import com.lyj.blog.util.ElasticseachClientUtil;
 import com.lyj.blog.util.GitUtil;
+import com.lyj.blog.util.VarUtil;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class BlogService {
         GitUtil.gitPull();
 
         //遍历目录，渲染笔记
-        FileUtil.mapDir(new File("/Users/yingjie.lu/Documents/note"),
+        FileUtil.mapDir(new File(VarUtil.notePath),
                 new DirFilter(), new BlogFilter(),
                 new DirCallBack(), new BlogCallBack(), DirOrFile.Instance);
 
