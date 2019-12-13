@@ -16,8 +16,8 @@ import org.springframework.data.elasticsearch.client.RestClients;
 @Configuration
 public class ElasticsearchConfig {
 
-    @Value("${elasticsearch.domin}")
-    private String domain;
+    @Value("${elasticsearch.hostAndPort}")
+    private String hostAndPort;
 
 
     //配置client客户端
@@ -25,7 +25,7 @@ public class ElasticsearchConfig {
     RestHighLevelClient client() {
 
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo(domain+":9200")
+                .connectedTo(hostAndPort)
                 .build();
 
         return RestClients.create(clientConfiguration).rest();
