@@ -22,7 +22,7 @@ public class ElasticseachClientUtil {
     //创建client
     private static RestHighLevelClient getClient(){
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
+                .connectedTo("127.0.0.1:9200")
                 .build();
         return RestClients.create(clientConfiguration).rest();
     }
