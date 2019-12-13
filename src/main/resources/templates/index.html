@@ -297,6 +297,8 @@
             searchAllPage:0,
             searchAllHasMoreFlag:false,//是否还有更多数据的标志
 
+            delay_time:250,//防抖250ms
+
         },
         watch: {
             //导航栏中目录过滤
@@ -353,12 +355,12 @@
                 }else{
                     this.headerData=this.headerBuff;
                 }
-            },500),
+            },this.delay_time),
             //搜索全部header
             searchAllHeader:debounce(function () {
                 this.searchAllHeaderPage=0;//页数清空
                 this._searchAllHeader();
-            },500),
+            },this.delay_time),
             //查询allHeader的数据
             _searchAllHeader(){
                 var _this=this;
@@ -391,7 +393,7 @@
             searchAll:debounce(function () {
                 this.searchAllPage=0;//页数清空
                 this._searchAll();
-            },500),
+            },this.delay_time),
             _searchAll(){
                 var _this=this;
                 if(this.searchAllInput!=""){
@@ -417,20 +419,6 @@
                     this.searchAllData=[];
                     this.searchAllHasMoreFlag=false;
                 }
-
-
-                // console.log("2332423")
-                // var _this=this;
-                // if(this.searchAllInput!=""){
-                //     // this.searchAllData=[];
-                //     axios.get('/searchAll/'+this.searchAllInput)
-                //         .then(function (response) {
-                //             console.log(response.data)
-                //             _this.searchAllData=response.data;
-                //         });
-                // }else{
-                //     this.searchAllData=[];
-                // }
             },
             //导航栏中目录过滤
             filterNode(value, data) {
