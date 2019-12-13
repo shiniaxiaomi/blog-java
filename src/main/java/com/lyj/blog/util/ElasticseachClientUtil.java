@@ -4,6 +4,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.GetIndexRequest;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 
@@ -30,6 +31,11 @@ public class ElasticseachClientUtil {
     public static void deleteIndex(String index) throws IOException {
         DeleteIndexRequest request = new DeleteIndexRequest(index);
         AcknowledgedResponse deleteIndexResponse = client.indices().delete(request, RequestOptions.DEFAULT);
+    }
+
+    public static boolean existIndex(String index) throws IOException {
+        GetIndexRequest request = new GetIndexRequest("header");
+        return client.indices().exists(request, RequestOptions.DEFAULT);
     }
 
     public static void main(String[] args) {
