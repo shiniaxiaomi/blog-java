@@ -3,6 +3,7 @@ package com.lyj.blog.file;
 import java.io.File;
 
 /**
+ * Blog过滤器，可以添加过滤条件，过滤的文件不会在BlogCallBack中回调
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 3:23 下午

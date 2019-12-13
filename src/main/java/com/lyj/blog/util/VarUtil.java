@@ -1,24 +1,14 @@
 package com.lyj.blog.util;
 
-import com.lyj.blog.model.BlogFile;
-import com.lyj.blog.model.Header;
 import org.apache.commons.io.FileUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
+ * 保存全局变量
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 9:59 上午
  */
 public class VarUtil {
-
-    public static Map<String, Header> headerMap=new HashMap();
-
-    public static BlogFile blogRoot=new BlogFile("blog","");
-
-    public static BlogFile blogFile=blogRoot;
 
     public static final String notePath= FileUtils.getUserDirectory() + "/Documents/note";
 

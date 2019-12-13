@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Queue;
 
 /**
+ * 根据path路径返回对应的路径下的目录结构
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/11 10:01 上午
@@ -16,7 +17,6 @@ import java.util.Queue;
 
 @Service
 public class DirService {
-
 
 
     //获取对应path的目录

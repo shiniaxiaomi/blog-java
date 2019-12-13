@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 
 /**
+ * 配置Elasticsearch
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/4 10:17 上午

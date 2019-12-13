@@ -3,6 +3,7 @@ package com.lyj.blog.file;
 import java.io.File;
 
 /**
+ * Dir回调类，读取到目录时会回调callBack方法
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 3:35 下午

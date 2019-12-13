@@ -2,11 +2,10 @@ package com.lyj.blog.service;
 
 import com.alibaba.fastjson.JSON;
 import com.lyj.blog.ESmodel.ESBlog;
+import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.*;
-import com.lyj.blog.util.ElasticseachClientUtil;
 import com.lyj.blog.util.GitUtil;
 import com.lyj.blog.util.VarUtil;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * blog的service，用于启动博客的渲染
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/11 3:31 下午
@@ -36,6 +36,13 @@ public class BlogService {
 
     @PostConstruct
     public void init() throws IOException {
+
+        //清除变量
+        DirOrFile.Instance=new DirOrFile();
+        ESBlog.blogMap.clear();
+        ESBlog.htmlMap.clear();
+        ESBlog.list.clear();
+        ESHeader.map.clear();
 
         //拉取笔记
         GitUtil.gitPull();

@@ -3,6 +3,7 @@ package com.lyj.blog.model;
 import java.util.List;
 
 /**
+ * 标题类，存储一个标题相关的信息
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 9:36 上午

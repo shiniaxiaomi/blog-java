@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 存在ES中header相关的内容
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/3 3:54 下午

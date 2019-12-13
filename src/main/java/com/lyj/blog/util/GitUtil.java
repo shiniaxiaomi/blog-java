@@ -7,6 +7,12 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * git工具类
+ * @author yingjie.lu
+ * @date 2019/12/13 9:26 下午
+ * @version 1.0
+ **/
 public class GitUtil {
     private static DefaultExecutor executor = new DefaultExecutor();
     static {

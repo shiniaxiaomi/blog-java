@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 目录文件
+ * blog类，存储一个blog相关的信息
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 2:44 下午

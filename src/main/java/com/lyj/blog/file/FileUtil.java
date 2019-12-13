@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
+ * 文件遍历工具类
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 3:23 下午
@@ -67,36 +68,6 @@ public class FileUtil {
 
     }
 
-
-    //转换dir到html
-//    public static void transformDirToHtml(DirOrFile dirOrFile,StringBuilder sb) {
-//        //文件
-//        if(dirOrFile.getChild()==null){
-//            sb.append("<li>");
-//            sb.append(dirOrFile.getName());
-//            sb.append("</li>");
-//            return;
-//        }
-//
-//        //目录
-//        sb.append("<li>");
-//        sb.append(dirOrFile.getName());
-//        sb.append("<ul>");
-//        for(DirOrFile child:dirOrFile.getChild()){
-//            transformDirToHtml(child,sb);
-//        }
-//        sb.append("</ul>");
-//        sb.append("</li>");
-//    }
-
-
-//    public static void main(String[] args) {
-//        DirOrFile dirOrFile = new DirOrFile();
-//        FileUtil.mapDir(new File("/Users/yingjie.lu/Documents/note"),
-//                new DirFilter(),new BlogFilter(),
-//                new DirCallBack(),new BlogCallBack(),dirOrFile);
-//        System.out.println(dirOrFile);
-//    }
 
 
 }

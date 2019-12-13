@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 存放ES中Blog相关的内容
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/3 3:53 下午

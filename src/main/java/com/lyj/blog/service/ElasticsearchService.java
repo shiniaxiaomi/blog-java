@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Elasticsearch相关的操作
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/11 12:50 下午

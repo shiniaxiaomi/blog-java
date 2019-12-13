@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 用于保存遍历目录的目录结构信息
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 4:18 下午
  */
 public class DirOrFile {
 
-    public static DirOrFile Instance=new DirOrFile();
+    public static DirOrFile Instance;
 
     String name;
 

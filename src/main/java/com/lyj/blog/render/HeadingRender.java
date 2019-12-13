@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 当解析到header时被回调
+ * 当解析到header标题时被回调
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/4 5:12 下午
@@ -42,8 +42,6 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
         Heading heading = (Heading) node;
         int level=heading.getLevel();
         String headerName;
-
-        //todo 可以在标题中添加标识，如果存在标识，则在大纲的标题中高亮显示（比如标题加粗的话就可以进行高亮，或者是（***））
 
         try {
             if(heading.getFirstChild() instanceof Link){
@@ -105,8 +103,6 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
         if(node==null){
             return;
         }
-
-
 
         if(node instanceof FencedCodeBlock){
             sb.append(((FencedCodeBlock)node).getLiteral());

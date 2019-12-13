@@ -10,9 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 /**
+ * 当扫描到一个blog的时候的回调，在回调中将笔记源码渲染成html，并提取出相关的信息，用于Elasticsearch的搜索
  * @author yingjie.lu
  * @version 1.0
  * @date 2019/12/5 3:35 下午
@@ -38,7 +38,7 @@ public class BlogCallBack implements CallBack {
             //将笔记进行渲染
             String html = MDUtil.render(note);//笔记html
 
-            //保存每个blog对应渲染后的html
+            //保存每个blog对应渲染后的html，便于之后直接将html在freemarkder中渲染
             ESBlog.htmlMap.put(blogId,html);
 
             //标记文件结束
