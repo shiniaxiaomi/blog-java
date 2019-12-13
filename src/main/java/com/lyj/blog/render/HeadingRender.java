@@ -80,8 +80,8 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
             ESHeader.addHeader(blogId,esHeader);
 
             //还在保留单个文件中的所有header
-//            BlogCallBack.sb.append(headerName);
-//            BlogCallBack.sb.append(",");
+            BlogCallBack.sb.append(headerName);
+            BlogCallBack.sb.append("|");
 
         }catch (Exception e){
             e.printStackTrace();

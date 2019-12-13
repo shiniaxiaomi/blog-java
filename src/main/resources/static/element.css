@@ -1,0 +1,78 @@
+.top-body{
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 30px 45px;
+}
+
+.markdown-body {
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0px 45px 45px 45px;
+}
+
+/*设置代码块中的字体大小*/
+code[class*=language-], pre[class*=language-] {
+    font-size: 13px;
+}
+
+@media (max-width: 767px) {
+    .markdown-body {
+        padding: 15px;
+    }
+}
+
+/*将级联选择器的高度变高*/
+.el-cascader-menu__wrap {
+    height: 325px;
+}
+
+/*设置抽屉的body的滚动条*/
+.el-drawer__body {
+    -webkit-box-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+
+/*设置抽屉的header的间距*/
+.el-drawer__header {
+    margin-bottom: 10px;
+    padding: 10px 10px 0;
+}
+.el-drawer__body {
+    -webkit-box-flex: 1;
+    flex: 1;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+
+.header{
+    display: block;
+}
+
+#header .header:hover  {
+    background-color:yellow;
+}
+
+/*将最后的面包屑中的样式去除*/
+.el-breadcrumb__item:last-child .el-breadcrumb__inner a{
+    font-weight: 700;
+    color: #606266;
+    cursor: pointer;
+}
+.el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover{
+    font-weight: 700;
+    color: #409EFF;
+    cursor: pointer;
+}
+
+/*分割线*/
+.el-divider--horizontal {
+    display: block;
+    height: 1px;
+    width: 100%;
+    margin: 6px 0;
+}

@@ -26,4 +26,5 @@ public class VarUtil {
         return notePath.length();
     }
 
+    public static String dirData;
 }

@@ -6,6 +6,7 @@ import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.DirOrFile;
 import com.lyj.blog.service.DirService;
 import com.lyj.blog.service.ElasticsearchService;
+import com.lyj.blog.util.VarUtil;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,12 @@ public class IndexController {
     public ModelAndView index(){
         ModelAndView index = new ModelAndView("index");
         String s = ESBlog.htmlMap.get("/README");
+        ESBlog esBlog = ESBlog.blogMap.get("/README");
         index.addObject("blog",s);
+        index.addObject("blogName","首页");
+        index.addObject("headers",esBlog.getHeaders());
+        index.addObject("description",esBlog.getDescription());
+        index.addObject("dirData", VarUtil.dirData);//全部目录及链接
         return index;
     }
 
@@ -49,11 +55,17 @@ public class IndexController {
 
         ModelAndView index = new ModelAndView("index");
 
-        String s = ESBlog.htmlMap.get(servletRequest.getServletPath().substring(5));
+        String blogName = servletRequest.getServletPath().substring(5);
+        String s = ESBlog.htmlMap.get(blogName);
         if(s==null){
             s = ESBlog.htmlMap.get("/README");//返回首页
         }
+        ESBlog esBlog = ESBlog.blogMap.get(blogName);
         index.addObject("blog",s);
+        index.addObject("blogName",blogName);
+        index.addObject("headers",esBlog.getHeaders());
+        index.addObject("description",esBlog.getDescription());
+        index.addObject("dirData", VarUtil.dirData);//全部目录及链接
         return index;
     }
 
@@ -80,17 +92,6 @@ public class IndexController {
     public List<ESHeader> getHeaders(HttpServletRequest servletRequest){
         List<ESHeader> headers = ESHeader.getHeader(servletRequest.getServletPath().substring(11));
         return headers;
-    }
-
-
-    @RequestMapping("search/{keyword}")
-    @ResponseBody
-    public List<ESHeader> search(@PathVariable String keyword){
-
-
-
-
-        return null;
     }
 
     //搜索所有标题

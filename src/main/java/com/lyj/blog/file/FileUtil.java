@@ -49,11 +49,9 @@ public class FileUtil {
         DirOrFile buff =null;
         if(dirOrFile!=null){
             if(file.isFile()){
-                buff = new DirOrFile(file.getName().substring(0,file.getName().length()-3), file.getPath().substring(VarUtil.getNotePathLength(),file.getPath().length()-3));//创建当前目录
-//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(,file.getPath().length()-3)));
+                buff = new DirOrFile(file.getName().substring(0,file.getName().length()-3),file.getPath().substring(VarUtil.getNotePathLength(),file.getPath().length()-3) );//创建当前目录
             }else{
-                buff = new DirOrFile(file.getName(), file.getPath().substring(VarUtil.getNotePathLength()));//创建当前目录
-//                dirOrFile.add(new DirOrFile(file.getName(),file.getPath().substring(VarUtil.getNotePathLength())));
+                buff = new DirOrFile(file.getName(),file.getPath().substring(VarUtil.getNotePathLength()) );//创建当前目录
             }
 
             dirOrFile.add(buff);

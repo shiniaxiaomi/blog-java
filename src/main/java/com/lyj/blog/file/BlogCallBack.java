@@ -1,12 +1,15 @@
 package com.lyj.blog.file;
 
 import com.lyj.blog.ESmodel.ESBlog;
+import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.util.MDUtil;
 import com.lyj.blog.util.VarUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,7 +19,7 @@ import java.util.UUID;
  */
 public class BlogCallBack implements CallBack {
 
-//    public static StringBuilder sb;//累计每个文件的header
+    public static StringBuilder sb;//累计每个文件的header
 
     @Override
     public void callback(File file) {
@@ -28,9 +31,9 @@ public class BlogCallBack implements CallBack {
             //标记文件开始
             //将blog添加到list中，并设置好id
             String blogId=file.getPath().substring(VarUtil.getNotePathLength(),file.getPath().length()-3);
-            ESBlog esBlog = new ESBlog(file.getName(), blogId,note, file.getPath());
+            ESBlog esBlog = new ESBlog(file.getName().substring(0,file.getName().length()-3), blogId);
             ESBlog.list.add(esBlog);//将blog保存到最后一个元素
-//            sb=new StringBuilder();//每次渲染新文件时就重新创建一个StringBuilder
+            sb=new StringBuilder();//每次渲染新文件时就重新创建一个StringBuilder
 
             //将笔记进行渲染
             String html = MDUtil.render(note);//笔记html
@@ -40,7 +43,19 @@ public class BlogCallBack implements CallBack {
 
             //标记文件结束
             //在一个文件渲染完成后，将本文件的headers添加到对应的blog对象的headers属性中
-//            esBlog.setHeaders(sb.toString());//将所有的headers设置进去
+            esBlog.setHeaders(sb.toString());//将所有的headers设置进去
+            //设置博客的描述
+            List<ESHeader> headerList = ESHeader.map.get(blogId);
+            if(headerList!=null){
+                Iterator<ESHeader> iterator = headerList.iterator();
+                while(iterator.hasNext()){
+                    ESHeader next = iterator.next();
+                    if(!next.getHeaderContent().equals("")){
+                        esBlog.setDescription(next.getHeaderContent());
+                        break;
+                    }
+                }
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

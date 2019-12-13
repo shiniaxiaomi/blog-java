@@ -12,27 +12,23 @@ import java.util.Map;
  */
 public class ESBlog {
 
+    public static Map<String,ESBlog> blogMap=new HashMap<>();//根据博客名称保存对应的博客
+
     public static List<ESBlog> list=new ArrayList<>();
 
     public static Map<String,String> htmlMap=new HashMap<>();//保存对应的博客的渲染后的html代码
-
-    public static final String blogPath="";//blog的路径
 
     String blogName;
 
     String blogId;
 
-    String blogText;//笔记源文件
-
-    String url;
-
     String headers;//一篇笔记中的所有header集合
 
-    public ESBlog(String blogName, String blogId,String blogText, String url) {
+    String description;//博客描述
+
+    public ESBlog(String blogName, String blogId) {
         this.blogName = blogName;
         this.blogId = blogId;
-        this.blogText=blogText;
-        this.url = url;
     }
 
     public String getBlogId() {
@@ -47,15 +43,15 @@ public class ESBlog {
         return blogName;
     }
 
-    public String getBlogText() {
-        return blogText;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
     public String getHeaders() {
         return headers;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
