@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 
 
-@Component
+//@Component
 public class PullTimer {
 
     @Autowired
