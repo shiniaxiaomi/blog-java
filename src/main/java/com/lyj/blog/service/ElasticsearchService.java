@@ -61,12 +61,14 @@ public class ElasticsearchService {
     }
 
     //查询所有的header
-    public SearchHit[] searchAllHeader(String keyword) throws IOException {
+    public SearchHit[] searchAllHeader(String keyword,int page) throws IOException {
         //构造查询条件
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(QueryBuilders.matchQuery("headerName",keyword));//使用正则匹配查询
-        sourceBuilder.from(0);
-        sourceBuilder.size(20);
+
+        int size=20;
+        sourceBuilder.from(page*size);
+        sourceBuilder.size((page+1)*size);
 
         //指定查询文档
         SearchRequest searchRequest = new SearchRequest().indices("header").source(sourceBuilder);
@@ -77,7 +79,7 @@ public class ElasticsearchService {
     }
 
 
-    public SearchHit[] searchAll(String keyword) throws IOException {
+    public SearchHit[] searchAll(String keyword,int page) throws IOException {
 
         //构造查询条件
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
@@ -93,8 +95,9 @@ public class ElasticsearchService {
 //        QueryBuilders.moreLikeThisQuery();//做内容推荐
 //        sourceBuilder.fetchSource();//排除返回的source数据的一些字段
 
-        sourceBuilder.from(0);
-        sourceBuilder.size(20);
+        int size=20;
+        sourceBuilder.from(page*size);
+        sourceBuilder.size((page+1)*size);
 
         //指定查询文档
         SearchRequest searchRequest = new SearchRequest().indices("header").source(sourceBuilder);

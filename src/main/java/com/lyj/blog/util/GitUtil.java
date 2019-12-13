@@ -10,7 +10,7 @@ import java.io.IOException;
 public class GitUtil {
     private static DefaultExecutor executor = new DefaultExecutor();
     static {
-        executor.setWorkingDirectory(new File(FileUtils.getUserDirectory() + "/note"));//将用户目录设置为工作目录
+        executor.setWorkingDirectory(new File(FileUtils.getUserDirectory() + "/Documents/note"));//将用户目录设置为工作目录
     }
 
     //拉取笔记

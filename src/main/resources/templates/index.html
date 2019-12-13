@@ -99,7 +99,6 @@
             margin: 6px 0;
         }
 
-
 </style>
 </head>
 <body >
@@ -186,7 +185,7 @@
                 <!--搜索全部-->
                 <el-tab-pane label="搜索全部">
                     <el-input v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
-                    <div v-for="item in searchAllData">
+                    <div v-for="item in searchAllData" >
                         <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
                             {{item.sourceAsMap.blogName}}：{{item.sourceAsMap.headerName}}
                         </el-link>
@@ -196,12 +195,10 @@
                         </el-link>
                         <el-divider></el-divider>
                     </div>
-
-<!--                    <div style="overflow:auto;height: 300px">-->
-<!--                        <ul class="infinite-list" v-infinite-scroll="load" >-->
-<!--                            <li v-for="i in count" class="infinite-list-item">{{ i }}</li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
+                    <div style="text-align: center;margin-top: 10px">
+                        <el-button size="small" @click="searchAllMore(searchAllPage++)" v-show="searchAllHasMoreFlag">加载更多</el-button>
+                        <el-button size="small" disabled v-show="!searchAllHasMoreFlag">无更多数据</el-button>
+                    </div>
                 </el-tab-pane>
                 <!--搜索所有标题-->
                 <el-tab-pane label="搜索所有标题">
@@ -212,6 +209,10 @@
                         </el-link>
                         <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">{{item.sourceAsMap.blogId}}</el-link>
                         <el-divider></el-divider>
+                    </div>
+                    <div style="text-align: center;margin-top: 10px">
+                        <el-button size="small" @click="searchAllHeaderMore(searchAllHeaderPage++)" v-show="searchAllHeaderHasMoreFlag">加载更多</el-button>
+                        <el-button size="small" disabled v-show="!searchAllHeaderHasMoreFlag">无更多数据</el-button>
                     </div>
                 </el-tab-pane>
 
@@ -287,12 +288,15 @@
             //search-header
             searchAllHeaderInput:"",
             searchAllHeaderData:[],
+            searchAllHeaderPage:0,
+            searchAllHeaderHasMoreFlag:false,//是否还有更多数据的标志
 
             //search-all
             searchAllInput:"",
             searchAllData:[],
+            searchAllPage:0,
+            searchAllHasMoreFlag:false,//是否还有更多数据的标志
 
-            count: 40
         },
         watch: {
             //导航栏中目录过滤
@@ -337,11 +341,6 @@
 
         },
         methods:{
-
-            load () {
-                this.count += 5
-                console.log("1221312")
-            },
             //大纲搜索
             headerSearch:debounce(function () {
                 if(this.headerSearchInput!=""){
@@ -354,37 +353,85 @@
                 }else{
                     this.headerData=this.headerBuff;
                 }
-            },200),
+            },500),
             //搜索全部header
             searchAllHeader:debounce(function () {
+                this.searchAllHeaderPage=0;//页数清空
+                this._searchAllHeader();
+            },500),
+            //查询allHeader的数据
+            _searchAllHeader(){
                 var _this=this;
                 if(this.searchAllHeaderInput!=""){
-                    this.searchAllHeaderData=[];
+                    var url='/searchAllHeader?keyword='+this.searchAllHeaderInput+"&page="+this.searchAllHeaderPage;
+
                     //查询所有header
-                    axios.get('/searchAllHeader/'+this.searchAllHeaderInput)
+                    axios.get(url)
                         .then(function (response) {
                             console.log(response.data)
-                            _this.searchAllHeaderData=response.data;
+                            if(_this.searchAllHeaderPage==0){
+                                _this.searchAllHeaderData=response.data;//不是查看更多则直接赋值
+                            }else{
+                                response.data.map(item=>{_this.searchAllHeaderData.push(item)})
+                            }
+                            //标记是否还有数据
+                            if(response.data.length>=20){
+                                _this.searchAllHeaderHasMoreFlag=true;
+                            }else{
+                                _this.searchAllHeaderHasMoreFlag=false;
+                            }
                         });
                 }else{
                     this.searchAllHeaderData=[];
+                    this.searchAllHeaderHasMoreFlag=false;
                 }
-            },200),
+            },
             //全局搜索
             //查询所有内容
             searchAll:debounce(function () {
+                this.searchAllPage=0;//页数清空
+                this._searchAll();
+            },500),
+            _searchAll(){
                 var _this=this;
                 if(this.searchAllInput!=""){
-                    this.searchAllData=[];
-                    axios.get('/searchAll/'+this.searchAllInput)
+                    var url='/searchAll?keyword='+this.searchAllInput+"&page="+this.searchAllPage;
+
+                    //查询所有
+                    axios.get(url)
                         .then(function (response) {
                             console.log(response.data)
-                            _this.searchAllData=response.data;
+                            if(_this.searchAllPage==0){
+                                _this.searchAllData=response.data;//不是查看更多则直接赋值
+                            }else{
+                                response.data.map(item=>{_this.searchAllData.push(item)})
+                            }
+                            //标记是否还有数据
+                            if(response.data.length>=20){
+                                _this.searchAllHasMoreFlag=true;
+                            }else{
+                                _this.searchAlHeaderHasMoreFlag=false;
+                            }
                         });
                 }else{
                     this.searchAllData=[];
+                    this.searchAllHasMoreFlag=false;
                 }
-            },200),
+
+
+                // console.log("2332423")
+                // var _this=this;
+                // if(this.searchAllInput!=""){
+                //     // this.searchAllData=[];
+                //     axios.get('/searchAll/'+this.searchAllInput)
+                //         .then(function (response) {
+                //             console.log(response.data)
+                //             _this.searchAllData=response.data;
+                //         });
+                // }else{
+                //     this.searchAllData=[];
+                // }
+            },
             //导航栏中目录过滤
             filterNode(value, data) {
                 if (!value) return true;
@@ -396,6 +443,16 @@
                     window.location="/blog"+data.url;
                 }
             },
+            searchAllMore(page){
+                console.log(page)
+                this._searchAll();
+            },
+            //加载更多
+            searchAllHeaderMore(page){
+                console.log(page)
+                //在点击加载更多时，页数自动增加
+                this._searchAllHeader();
+            }
         }
 
     })

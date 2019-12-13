@@ -94,10 +94,10 @@ public class IndexController {
     }
 
     //搜索所有标题
-    @RequestMapping("searchAllHeader/{keyword}")
+    @RequestMapping("searchAllHeader")
     @ResponseBody
-    public SearchHit[] searchAllHeader(@PathVariable String keyword) throws IOException {
-        return elasticsearchService.searchAllHeader(keyword);
+    public SearchHit[] searchAllHeader(String keyword,int page) throws IOException {
+        return elasticsearchService.searchAllHeader(keyword,page);
     }
 
     /**
@@ -105,10 +105,10 @@ public class IndexController {
      * @return
      * @throws IOException
      */
-    @RequestMapping("searchAll/{keyword}")
+    @RequestMapping("searchAll")
     @ResponseBody
-    public SearchHit[] searchAll(@PathVariable String keyword) throws IOException {
-        return elasticsearchService.searchAll(keyword);
+    public SearchHit[] searchAll(String keyword,int page) throws IOException {
+        return elasticsearchService.searchAll(keyword,page);
     }
 
     //searchToJSON/xxx：search的精简版，只返回字符串，不返回页面，用于本地直接打开
