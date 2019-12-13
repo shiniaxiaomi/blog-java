@@ -21,7 +21,7 @@ public class ElasticsearchConfig {
     RestHighLevelClient client() {
 
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("127.0.0.1:9200")
+                .connectedTo("localhost:9200")
                 .build();
 
         return RestClients.create(clientConfiguration).rest();
