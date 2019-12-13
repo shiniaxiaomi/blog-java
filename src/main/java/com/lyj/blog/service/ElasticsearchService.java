@@ -53,7 +53,7 @@ public class ElasticsearchService {
                         .source(XContentType.JSON,
                                 "headerName", header.getHeaderName(),
                                 "blogId",header.getBlogId(),
-                                "blogName",header.getBlogName().substring(0,header.getBlogName().length()-3),
+                                "blogName",header.getBlogName(),
                                 "headerContent",header.getHeaderContent(),
                                 "level",header.getLevel()));
             }
