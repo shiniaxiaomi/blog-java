@@ -1,6 +1,7 @@
 package com.lyj.blog.timer;
 
 import com.lyj.blog.service.BlogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,8 @@ import java.io.IOException;
  */
 
 
-//@Component
+@Component
+@Slf4j
 public class PullTimer {
 
     @Autowired
@@ -24,7 +26,12 @@ public class PullTimer {
     //凌晨3点自动更新
     @Scheduled(cron = "* * 3 * * ?")
     private void notePull() throws IOException {
-        blogService.init();
+        try{
+            log.debug("执行定时任务。。。");
+            blogService.init();
+        }catch (Exception e){
+            log.error("异常："+e);
+        }
     }
 
 }

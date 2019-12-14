@@ -86,6 +86,13 @@
             <version>1.2.58</version>
         </dependency>
 
+        <!--lombok及sl4j日志-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
 
         <!-- 添加jpa启动器 -->
 <!--        <dependency>-->
