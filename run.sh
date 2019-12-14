@@ -11,5 +11,5 @@ fi
 projectPath=/root/code/$appName
 cd $projectPath/target
 name=$(ls |grep jar$)
-java -jar $projectPath/target/$name --spring.profiles.active=prod >$projectPath/log &
+nohup java -jar $projectPath/target/$name --spring.profiles.active=prod >$projectPath/log &
 tail -f $projectPath/log
