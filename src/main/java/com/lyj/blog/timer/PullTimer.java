@@ -30,7 +30,7 @@ public class PullTimer {
             log.debug("执行定时任务。。。");
             blogService.init();
         }catch (Exception e){
-            log.error("异常："+e);
+            log.error("定时任务执行异常："+e);
         }
     }
 

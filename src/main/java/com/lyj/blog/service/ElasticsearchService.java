@@ -70,9 +70,8 @@ public class ElasticsearchService {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(QueryBuilders.matchQuery("headerName",keyword));//使用正则匹配查询
 
-        int size=20;
-        sourceBuilder.from(page*size);
-        sourceBuilder.size((page+1)*size);
+        sourceBuilder.from(page*VarUtil.pageSize);
+        sourceBuilder.size((page+1)*VarUtil.pageSize);
 
         //指定查询文档
         SearchRequest searchRequest = new SearchRequest().indices("header").source(sourceBuilder);
@@ -99,9 +98,8 @@ public class ElasticsearchService {
 //        QueryBuilders.moreLikeThisQuery();//做内容推荐
 //        sourceBuilder.fetchSource();//排除返回的source数据的一些字段
 
-        int size=20;
-        sourceBuilder.from(page*size);
-        sourceBuilder.size((page+1)*size);
+        sourceBuilder.from(page*VarUtil.pageSize);
+        sourceBuilder.size((page+1)*VarUtil.pageSize);
 
         //指定查询文档
         SearchRequest searchRequest = new SearchRequest().indices("header").source(sourceBuilder);

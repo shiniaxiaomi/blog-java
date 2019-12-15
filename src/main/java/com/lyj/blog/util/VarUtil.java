@@ -17,4 +17,6 @@ public class VarUtil {
     }
 
     public static String dirData;
+
+    public static final int pageSize=20;
 }

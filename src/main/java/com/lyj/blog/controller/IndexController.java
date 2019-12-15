@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.DirOrFile;
+import com.lyj.blog.service.BlogService;
 import com.lyj.blog.service.DirService;
 import com.lyj.blog.service.ElasticsearchService;
 import com.lyj.blog.util.VarUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,9 +29,13 @@ import java.util.List;
  */
 
 
+@Slf4j
 @Controller
 @RequestMapping
 public class IndexController {
+
+    @Autowired
+    private BlogService blogService;
 
     @Autowired
     DirService dirService;
@@ -63,7 +69,7 @@ public class IndexController {
         }
         ESBlog esBlog = ESBlog.blogMap.get(blogName);
         index.addObject("blog",s);
-        index.addObject("blogName",blogName);
+        index.addObject("blogName",esBlog.getBlogName());
         index.addObject("headers",esBlog.getHeaders());
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
@@ -111,6 +117,23 @@ public class IndexController {
     @ResponseBody
     public SearchHit[] searchAll(String keyword,int page) throws IOException {
         return elasticsearchService.searchAll(keyword,page);
+    }
+
+
+    /**
+     * 手动更新博客
+     * @return 返回首页
+     * @throws IOException
+     */
+    @RequestMapping("pull")
+    public String manualPull(){
+        boolean init = blogService.init();
+        if (init){
+            return "forward:/";
+        }else {
+            return "手动更新失败";
+        }
+
     }
 
     //searchToJSON/xxx：search的精简版，只返回字符串，不返回页面，用于本地直接打开

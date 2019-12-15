@@ -1,5 +1,6 @@
 package com.lyj.blog.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.io.FileUtils;
@@ -13,6 +14,8 @@ import java.io.IOException;
  * @date 2019/12/13 9:26 下午
  * @version 1.0
  **/
+
+@Slf4j
 public class GitUtil {
     private static DefaultExecutor executor = new DefaultExecutor();
     static {
@@ -20,9 +23,13 @@ public class GitUtil {
     }
 
     //拉取笔记
-    public static void gitPull() throws IOException {
-        int execute = executor.execute(CommandLine.parse("git pull"));
-        System.out.println("笔记拉取成功");
+    public static void gitPull() {
+        try {
+            executor.execute(CommandLine.parse("git pull"));
+        } catch (IOException e) {
+            log.error("笔记拉取失败",e);
+        }
+        log.debug("笔记拉取成功");
     }
 
 }

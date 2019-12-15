@@ -6,6 +6,7 @@ import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.*;
 import com.lyj.blog.util.GitUtil;
 import com.lyj.blog.util.VarUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.io.IOException;
  * @date 2019/12/11 3:31 下午
  */
 
+@Slf4j
 @Service
 public class BlogService {
 
@@ -35,7 +37,7 @@ public class BlogService {
     private DirService dirService;
 
     @PostConstruct
-    public void init() throws IOException {
+    public boolean init() {
 
         //清除变量
         DirOrFile.Instance=new DirOrFile();
@@ -53,15 +55,20 @@ public class BlogService {
                 new DirCallBack(), new BlogCallBack(), DirOrFile.Instance);
 
         //是否清除和添加elasticsearch的数据
-        if (!isDev) {
-            boolean existIndex = elasticsearchService.existIndex("header");
-            if(existIndex){
-                elasticsearchService.deleteIndex("header");
+        try {
+            if (!isDev) {
+                boolean existIndex = elasticsearchService.existIndex("header");
+                if(existIndex){
+                    elasticsearchService.deleteIndex("header");
+                }
+                //批量添加header数据到elasticsearch
+                elasticsearchService.addHeaderBulk();
             }
-
-            //批量添加header数据到elasticsearch
-            elasticsearchService.addHeaderBulk();
+        } catch (IOException e) {
+            log.error("elasticsearch异常",e);
+            return false;
         }
+
 
         //==========================扫尾工作===========================
         //将list转为map，保存blog的基本信息
@@ -76,6 +83,7 @@ public class BlogService {
         //创建全目录字符串
         VarUtil.dirData= JSON.toJSONString(dirService.getDir("/"));
 
+        return true;
     }
 
 
