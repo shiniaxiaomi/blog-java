@@ -36,7 +36,12 @@ public class ImageRender implements NodeRenderer, HtmlNodeRendererFactory {
     @Override
     public void render(Node node) {
         Image image = (Image) node;
-        html.tag("img src='/loading.gif' buff='" + image.getDestination().substring(VarUtil.getImagePathLength()) + "'");//将src先设置成loading图片，之后在js中加载真正的图片
+        try {
+            html.tag("img src='/loading.gif' buff='" + image.getDestination().substring(VarUtil.getImagePathLength()) + "'");//将src先设置成loading图片，之后在js中加载真正的图片
+        }catch (Exception e){
+            System.out.println(image.getDestination());
+            System.out.println(e);
+        }
     }
 
 }
