@@ -1,6 +1,7 @@
 package com.lyj.blog.render;
 
 import com.lyj.blog.util.VarUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.commonmark.node.Image;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.NodeRenderer;
@@ -17,6 +18,8 @@ import java.util.Set;
  * @version 1.0
  * @date 2019/12/4 5:14 下午
  */
+
+@Slf4j
 public class ImageRender implements NodeRenderer, HtmlNodeRendererFactory {
 
     private HtmlWriter html;
@@ -39,8 +42,7 @@ public class ImageRender implements NodeRenderer, HtmlNodeRendererFactory {
         try {
             html.tag("img src='/loading.gif' buff='" + image.getDestination().substring(VarUtil.getImagePathLength()) + "'");//将src先设置成loading图片，之后在js中加载真正的图片
         }catch (Exception e){
-            System.out.println(image.getDestination());
-            System.out.println(e);
+            log.error("图片解析错误:"+image.getDestination(),e);
         }
     }
 

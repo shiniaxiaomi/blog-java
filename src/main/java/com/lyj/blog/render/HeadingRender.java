@@ -3,7 +3,6 @@ package com.lyj.blog.render;
 import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.BlogCallBack;
-import com.lyj.blog.model.Header;
 import lombok.extern.slf4j.Slf4j;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
@@ -85,7 +84,7 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
             BlogCallBack.sb.append("|");
 
         }catch (Exception e){
-            log.error("header解析错误",e);
+            log.error("header解析错误:"+ heading,e);
         }
 
     }
