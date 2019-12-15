@@ -1,5 +1,6 @@
 package com.lyj.blog.render;
 
+import com.lyj.blog.util.VarUtil;
 import org.commonmark.node.Image;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.NodeRenderer;
@@ -35,8 +36,7 @@ public class ImageRender implements NodeRenderer, HtmlNodeRendererFactory {
     @Override
     public void render(Node node) {
         Image image = (Image) node;
-        html.tag("img src='/css/loading.gif' buff='"+image.getDestination()+"'");//将src先设置成loading图片，之后在js中加载真正的图片
-        html.tag("img");
+        html.tag("img src='/loading.gif' buff='" + image.getDestination().substring(VarUtil.getImagePathLength()) + "'");//将src先设置成loading图片，之后在js中加载真正的图片
     }
 
 }

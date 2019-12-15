@@ -183,6 +183,17 @@
         }
     }
 
+    //懒加载图片
+    window.onload = function() {
+        var imgs=document.getElementsByTagName("img");
+        for(var i=0;i<imgs.length;i++){
+            var img=imgs[i];
+            if(img.attributes.length!=0){
+                img.src=window.location.origin+img.attributes.buff.value;
+            }
+        }
+    };
+
     var vue=new Vue({
         el: '#app',
         data: {
@@ -230,11 +241,6 @@
         },
         created:function(){
             var _this=this;
-            // //获取目录数据
-            // axios.get('/getDir')
-            //     .then(function (response) {
-            //         _this.dirData=response.data;
-            //     });
             //获取header数据,并保存到headerBuff和headerData中
             var headers=document.getElementsByClassName("header");
             for(var i=0;i<headers.length;i++){
