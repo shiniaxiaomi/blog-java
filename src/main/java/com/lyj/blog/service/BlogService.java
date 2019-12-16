@@ -37,6 +37,9 @@ public class BlogService {
     @Value("${isDev}")
     boolean isDev;
 
+    @Value("${blogVisitTimesFilePath}")
+    String blogVisitTimesFilePath;
+
     @Autowired
     private DirService dirService;
 
@@ -103,12 +106,19 @@ public class BlogService {
      * @throws IOException
      */
     public void readVisitTimes() throws IOException {
-        List<String> lines = FileUtils.readLines(new File("blogVisitTimes"));
-        for(int i=0;i<lines.size();i+=2){
-            String blogId = lines.get(i);
-            int visitTimes = Integer.parseInt(lines.get(i + 1));
-            ESBlog.blogMap.get(blogId).setVisitTimes(visitTimes);
+        File file = new File(blogVisitTimesFilePath + "blogVisitTimes");
+        if(file.exists()){
+            List<String> lines = FileUtils.readLines(file);
+            for(int i=0;i<lines.size();i+=2){
+                String blogId = lines.get(i);
+                int visitTimes = Integer.parseInt(lines.get(i + 1));
+                ESBlog.blogMap.get(blogId).setVisitTimes(visitTimes);
+            }
+        }else{
+            //如果文件不存在，则创建
+            writeVisitTimes();
         }
+
     }
 
     /**
@@ -127,7 +137,7 @@ public class BlogService {
             sb.append("\n");
         }
 
-        FileUtils.writeStringToFile(new File("blogVisitTimes"),sb.toString());
+        FileUtils.writeStringToFile(new File(blogVisitTimesFilePath+"blogVisitTimes"),sb.toString());
     }
 
 }
