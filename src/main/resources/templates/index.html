@@ -60,10 +60,10 @@
                 :visible.sync="outline_drawer"
                 direction="ltr"
                 :modal="true"
-                @opened="outline_drawer_open"
+                @opened="focus_outline"
                 :size="outline_size">
 
-            <el-tabs type="border-card" :stretch="true" @tab-click="outline_tab_click">
+            <el-tabs type="border-card" :stretch="true" @tab-click="focus_outline" v-model="outline_tab_active_value">
                 <!--大纲-->
                 <el-tab-pane label="大纲">
                     <el-input id="headerSearchInput" v-model="headerSearchInput" clearable placeholder="搜索大纲" @input="headerSearch"></el-input>
@@ -98,15 +98,15 @@
         </el-drawer>
 
 
-        <!--目录结构-->
+        <!--全能搜索-->
         <el-drawer
                 title="全能搜索"
                 direction="rtl"
                 :visible.sync="dir_drawer"
-                @opened="search_drawer_open"
+                @opened="focus_search"
                 :size="dir_size">
 
-            <el-tabs type="border-card" :stretch="true" @tab-click="search_tab_click">
+            <el-tabs type="border-card" :stretch="true" @tab-click="focus_search" v-model="search_tab_active_value">
                 <!--搜索全部-->
                 <el-tab-pane label="搜索全部">
                     <el-input id="searchAllInput" v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
@@ -205,6 +205,7 @@
             headerData:[],
             headerBuff:[],
             outline_drawer: false,
+            outline_tab_active_value:"",//导航栏激活的标签名称
             outline_size: window.innerWidth<576==true?'70%':'20%',
 
             //dir
@@ -232,6 +233,7 @@
             searchAllData:[],
             searchAllPage:0,
             searchAllHasMoreFlag:false,//是否还有更多数据的标志
+            search_tab_active_value:"",//搜索栏激活的标签名称
 
             delay_time:250,//防抖250ms
 
@@ -372,13 +374,9 @@
                 //在点击加载更多时，页数自动增加
                 this._searchAllHeader();
             },
-            //导航栏打开时大纲输入框获取焦点
-            outline_drawer_open(){
-                document.getElementById("headerSearchInput").focus();
-            },
-            //点击tab使得输入框获取焦点
-            outline_tab_click(tab){
-                if(tab.paneName=="0"){
+            //根据标签页使得对应输入框获取焦点
+            focus_outline(){
+                if(this.outline_tab_active_value=="0"){
                     setTimeout(function () {
                         document.getElementById("headerSearchInput").focus();
                     },150)
@@ -388,13 +386,9 @@
                     },150)
                 }
             },
-            //搜索栏打开时搜索全部输入框获取焦点
-            search_drawer_open(){
-                document.getElementById("searchAllInput").focus();
-            },
-            //点击tab使得输入框获取焦点
-            search_tab_click(tab){
-                if(tab.paneName=="0"){
+            //根据标签页使得对应输入框获取焦点
+            focus_search(){
+                if(this.search_tab_active_value=="0"){
                     setTimeout(function () {
                         document.getElementById("searchAllInput").focus();
                     },150)
