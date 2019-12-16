@@ -60,12 +60,13 @@
                 :visible.sync="outline_drawer"
                 direction="ltr"
                 :modal="true"
+                @opened="outline_drawer_open"
                 :size="outline_size">
 
-            <el-tabs type="border-card" :stretch="true">
+            <el-tabs type="border-card" :stretch="true" @tab-click="outline_tab_click">
                 <!--大纲-->
                 <el-tab-pane label="大纲">
-                    <el-input v-model="headerSearchInput" clearable placeholder="搜索大纲" @input="headerSearch"></el-input>
+                    <el-input id="headerSearchInput" v-model="headerSearchInput" clearable placeholder="搜索大纲" @input="headerSearch"></el-input>
                     <el-link v-for="(item,index) in headerData"
                              :key="index"
                              :class="'header side-header'+item.levle"
@@ -78,6 +79,7 @@
                 <!--目录-->
                 <el-tab-pane label="目录">
                     <el-input
+                            id="filterDirText"
                             placeholder="输入关键字进行过滤"
                             v-model="filterDirText">
                     </el-input>
@@ -101,12 +103,13 @@
                 title="全能搜索"
                 direction="rtl"
                 :visible.sync="dir_drawer"
+                @opened="search_drawer_open"
                 :size="dir_size">
 
-            <el-tabs type="border-card" :stretch="true">
+            <el-tabs type="border-card" :stretch="true" @tab-click="search_tab_click">
                 <!--搜索全部-->
                 <el-tab-pane label="搜索全部">
-                    <el-input v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
+                    <el-input id="searchAllInput" v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
                     <div v-for="item in searchAllData" >
                         <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
                             {{item.sourceAsMap.blogName}}：{{item.sourceAsMap.headerName}}
@@ -124,7 +127,7 @@
                 </el-tab-pane>
                 <!--搜索所有标题-->
                 <el-tab-pane label="搜索所有标题">
-                    <el-input v-model="searchAllHeaderInput" clearable placeholder="搜索所有标题" @input="searchAllHeader"></el-input>
+                    <el-input id="searchAllHeaderInput" v-model="searchAllHeaderInput" clearable placeholder="搜索所有标题" @input="searchAllHeader"></el-input>
                     <div v-for="item in searchAllHeaderData">
                         <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
                             {{item.sourceAsMap.headerName}}
@@ -368,7 +371,40 @@
                 console.log(page)
                 //在点击加载更多时，页数自动增加
                 this._searchAllHeader();
+            },
+            //导航栏打开时大纲输入框获取焦点
+            outline_drawer_open(){
+                document.getElementById("headerSearchInput").focus();
+            },
+            //点击tab使得输入框获取焦点
+            outline_tab_click(tab){
+                if(tab.paneName=="0"){
+                    setTimeout(function () {
+                        document.getElementById("headerSearchInput").focus();
+                    },150)
+                }else{
+                    setTimeout(function () {
+                        document.getElementById("filterDirText").focus();
+                    },150)
+                }
+            },
+            //搜索栏打开时搜索全部输入框获取焦点
+            search_drawer_open(){
+                document.getElementById("searchAllInput").focus();
+            },
+            //点击tab使得输入框获取焦点
+            search_tab_click(tab){
+                if(tab.paneName=="0"){
+                    setTimeout(function () {
+                        document.getElementById("searchAllInput").focus();
+                    },150)
+                }else{
+                    setTimeout(function () {
+                        document.getElementById("searchAllHeaderInput").focus();
+                    },150)
+                }
             }
+            
         }
 
     })

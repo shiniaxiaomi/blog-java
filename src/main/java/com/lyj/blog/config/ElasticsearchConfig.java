@@ -24,7 +24,6 @@ public class ElasticsearchConfig {
     //配置client客户端
     @Bean
     RestHighLevelClient client() {
-
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(hostAndPort)
                 .build();

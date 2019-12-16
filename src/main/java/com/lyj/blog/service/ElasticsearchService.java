@@ -73,7 +73,7 @@ public class ElasticsearchService {
         sourceBuilder.from(page*VarUtil.pageSize);
         sourceBuilder.size((page+1)*VarUtil.pageSize);
 
-        //指定查询文档
+        //指定查询的索引
         SearchRequest searchRequest = new SearchRequest().indices("header").source(sourceBuilder);
 
         //通过client进行查询
@@ -101,7 +101,7 @@ public class ElasticsearchService {
         sourceBuilder.from(page*VarUtil.pageSize);
         sourceBuilder.size((page+1)*VarUtil.pageSize);
 
-        //指定查询文档
+        //指定查询的索引
         SearchRequest searchRequest = new SearchRequest().indices("header").source(sourceBuilder);
 
         //通过client进行查询
