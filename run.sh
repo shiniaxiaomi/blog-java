@@ -9,7 +9,7 @@ then
 #    if test ${status} == 'success'
 #    then
 #        # 如果保存成功，则停止应用
-#        kill -9 $app
+        kill -9 $app
 #    else
 #        # 如果保存失败，停止脚本
 #        echo '接口调用失败'
