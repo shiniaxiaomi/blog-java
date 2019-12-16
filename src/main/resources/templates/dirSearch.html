@@ -31,6 +31,7 @@
         <el-page-header @back="goBack" :content="title"></el-page-header>
 
         <el-input
+                :autofocus="true"
                 style="margin-top: 20px"
                 placeholder="输入关键字进行过滤"
                 v-model="filterText">
