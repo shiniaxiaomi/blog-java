@@ -3,7 +3,7 @@
     min-width: 200px;
     max-width: 980px;
     margin: 0 auto;
-    padding: 30px 45px;
+    padding: 30px 45px 0px 45px;
 }
 
 .markdown-body {
@@ -21,7 +21,11 @@ code[class*=language-], pre[class*=language-] {
 
 @media (max-width: 767px) {
     .markdown-body {
-        padding: 15px;
+        padding: 0px 15px 15px 15px;
+    }
+
+    .top-body{
+        padding: 20px 15px 0px 15px;
     }
 }
 

@@ -27,6 +27,8 @@ public class ESBlog {
 
     String description;//博客描述
 
+    int visitTimes;//记录博客的访问次数
+
     public ESBlog(String blogName, String blogId) {
         this.blogName = blogName;
         this.blogId = blogId;
@@ -54,5 +56,17 @@ public class ESBlog {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getAndIncrVisitTimes() {
+        return visitTimes++;//返回访问次数后并自增
+    }
+
+    public int getVisitTimes() {
+        return visitTimes;//直接返回访问次数
+    }
+
+    public void setVisitTimes(int visitTimes) {
+        this.visitTimes = visitTimes;
     }
 }

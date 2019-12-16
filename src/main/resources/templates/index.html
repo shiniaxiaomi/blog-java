@@ -52,6 +52,11 @@
             </el-col>
         </el-row>
 
+        <el-row style="margin: 15px 0px;">
+            <el-col :span="24">
+                <el-link type="info" :underline="false">阅读：${visitTimes!'0'}</el-link>
+            </el-col>
+        </el-row>
 
         <!--导航-->
         <el-drawer
@@ -97,59 +102,62 @@
             </el-tabs>
         </el-drawer>
 
-
         <!--全能搜索-->
         <el-drawer
-                title="全能搜索"
-                direction="rtl"
-                :visible.sync="dir_drawer"
-                @opened="focus_search"
-                :size="dir_size">
+                    title="全能搜索"
+                    direction="rtl"
+                    :visible.sync="dir_drawer"
+                    @opened="focus_search"
+                    :size="dir_size">
 
-            <el-tabs type="border-card" :stretch="true" @tab-click="focus_search" v-model="search_tab_active_value">
-                <!--搜索全部-->
-                <el-tab-pane label="搜索全部">
-                    <el-input id="searchAllInput" v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
-                    <div v-for="item in searchAllData" >
-                        <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
-                            {{item.sourceAsMap.blogName}}：{{item.sourceAsMap.headerName}}
-                        </el-link>
+                <el-tabs type="border-card" :stretch="true" @tab-click="focus_search" v-model="search_tab_active_value">
+                    <!--搜索全部-->
+                    <el-tab-pane label="搜索全部">
+                        <el-input id="searchAllInput" v-model="searchAllInput" clearable placeholder="搜索所有内容" @input="searchAll"></el-input>
+                        <div v-for="item in searchAllData" >
+                            <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
+                                {{item.sourceAsMap.blogName}}：{{item.sourceAsMap.headerName}}
+                            </el-link>
 
-                        <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">
-                            {{item.sourceAsMap.headerContent.length>200?item.sourceAsMap.headerContent.substring(0,100):item.sourceAsMap.headerContent}}
-                        </el-link>
-                        <el-divider></el-divider>
-                    </div>
-                    <div style="text-align: center;margin-top: 10px">
-                        <el-button size="small" @click="searchAllMore(searchAllPage++)" v-show="searchAllHasMoreFlag">加载更多</el-button>
-                        <el-button size="small" disabled v-show="!searchAllHasMoreFlag">无更多数据</el-button>
-                    </div>
-                </el-tab-pane>
-                <!--搜索所有标题-->
-                <el-tab-pane label="搜索所有标题">
-                    <el-input id="searchAllHeaderInput" v-model="searchAllHeaderInput" clearable placeholder="搜索所有标题" @input="searchAllHeader"></el-input>
-                    <div v-for="item in searchAllHeaderData">
-                        <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
-                            {{item.sourceAsMap.headerName}}
-                        </el-link>
-                        <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">{{item.sourceAsMap.blogId}}</el-link>
-                        <el-divider></el-divider>
-                    </div>
-                    <div style="text-align: center;margin-top: 10px">
-                        <el-button size="small" @click="searchAllHeaderMore(searchAllHeaderPage++)" v-show="searchAllHeaderHasMoreFlag">加载更多</el-button>
-                        <el-button size="small" disabled v-show="!searchAllHeaderHasMoreFlag">无更多数据</el-button>
-                    </div>
-                </el-tab-pane>
+                            <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">
+                                {{item.sourceAsMap.headerContent.length>200?item.sourceAsMap.headerContent.substring(0,100):item.sourceAsMap.headerContent}}
+                            </el-link>
+                            <el-divider></el-divider>
+                        </div>
+                        <div style="text-align: center;margin-top: 10px">
+                            <el-button size="small" @click="searchAllMore(searchAllPage++)" v-show="searchAllHasMoreFlag">加载更多</el-button>
+                            <el-button size="small" disabled v-show="!searchAllHasMoreFlag">无更多数据</el-button>
+                        </div>
+                    </el-tab-pane>
+                    <!--搜索所有标题-->
+                    <el-tab-pane label="搜索所有标题">
+                        <el-input id="searchAllHeaderInput" v-model="searchAllHeaderInput" clearable placeholder="搜索所有标题" @input="searchAllHeader"></el-input>
+                        <div v-for="item in searchAllHeaderData">
+                            <el-link :underline="false" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName" style="display: block">
+                                {{item.sourceAsMap.headerName}}
+                            </el-link>
+                            <el-link type="info" :underline="false" style="display: block" :href="'/blog'+item.sourceAsMap.blogId+'#'+item.sourceAsMap.headerName">{{item.sourceAsMap.blogId}}</el-link>
+                            <el-divider></el-divider>
+                        </div>
+                        <div style="text-align: center;margin-top: 10px">
+                            <el-button size="small" @click="searchAllHeaderMore(searchAllHeaderPage++)" v-show="searchAllHeaderHasMoreFlag">加载更多</el-button>
+                            <el-button size="small" disabled v-show="!searchAllHeaderHasMoreFlag">无更多数据</el-button>
+                        </div>
+                    </el-tab-pane>
 
-            </el-tabs>
+                </el-tabs>
 
-        </el-drawer>
+            </el-drawer>
+
     </div>
 
     <!-- 博客内容（放在app外面，避免被vue解析） -->
     <div id="blog" class="markdown-body">
         ${blog!}
     </div>
+
+    <!-- 用于blogName的复制 -->
+    <input id="blogName" style="display: none" value="editnote ${blogName!}" />
 </body>
 <!--vue.js-->
 <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
@@ -173,6 +181,8 @@
     var Q_key=113;
     var w_key=87;
     var W_key=119;
+    var c_key=67;
+    var C_key=99;
     document.onkeypress=function (event) {
         var key = event.keyCode;
 
@@ -183,6 +193,13 @@
         }else if(event.shiftKey && (key==w_key || key==W_key)){
             vue.dir_drawer=!vue.dir_drawer;
             event.preventDefault();//阻止默认事件
+        }else if(event.shiftKey && (key==c_key || key==C_key)){
+            //将笔记的名称保存到剪贴板中
+            var blogName=document.getElementById("blogName");
+            blogName.style.display='block';//只有先显示出来，才能够复制内容
+            blogName.select();// 选择对象并选中
+            document.execCommand("copy");// 执行浏览器复制命令
+            blogName.style.display='none';//隐藏input输入框
         }
     }
 

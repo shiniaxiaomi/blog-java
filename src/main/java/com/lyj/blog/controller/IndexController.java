@@ -8,6 +8,8 @@ import com.lyj.blog.service.BlogService;
 import com.lyj.blog.service.DirService;
 import com.lyj.blog.service.ElasticsearchService;
 import com.lyj.blog.util.VarUtil;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,7 @@ public class IndexController {
         index.addObject("headers",esBlog.getHeaders());
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
+        index.addObject("visitTimes",esBlog.getAndIncrVisitTimes());//获取访问次数并自增
         return index;
     }
 
@@ -73,6 +76,7 @@ public class IndexController {
         index.addObject("headers",esBlog.getHeaders());
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
+        index.addObject("visitTimes",esBlog.getAndIncrVisitTimes());//获取访问次数并自增
         return index;
     }
 
@@ -126,14 +130,49 @@ public class IndexController {
      * @throws IOException
      */
     @RequestMapping("pull")
+    @ResponseBody
     public String manualPull(){
         boolean init = blogService.init();
         if (init){
-            return "forward:/";
+            return "博客更新成功";
         }else {
-            return "手动更新失败";
+            return "博客更新失败";
         }
 
+    }
+
+    /**
+     * 保存blog的访问次数到文件
+     * @return
+     */
+    @RequestMapping("writeBlogVisitTimes")
+    @ResponseBody
+    public String writeBlogVisitTimes(){
+        try {
+            blogService.writeVisitTimes();
+        } catch (IOException e) {
+            log.error("blog的访问次数保存失败："+e);
+            return "error";
+        }
+
+        return "success";
+    }
+
+    /**
+     * 读取blog的访问次数到文件
+     * @return
+     */
+    @RequestMapping("readBlogVisitTimes")
+    @ResponseBody
+    public String readBlogVisitTimes(){
+        try {
+            blogService.readVisitTimes();
+        } catch (IOException e) {
+            log.error("blog的访问次数读取失败："+e);
+            return "blog的访问次数读取失败";
+        }
+
+        return "blog的访问次数读取成功";
     }
 
     //searchToJSON/xxx：search的精简版，只返回字符串，不返回页面，用于本地直接打开

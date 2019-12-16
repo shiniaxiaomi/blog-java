@@ -7,6 +7,7 @@ import com.lyj.blog.file.*;
 import com.lyj.blog.util.GitUtil;
 import com.lyj.blog.util.VarUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * blog的service，用于启动博客的渲染
@@ -83,8 +87,47 @@ public class BlogService {
         //创建全目录字符串
         VarUtil.dirData= JSON.toJSONString(dirService.getDir("/"));
 
+        try {
+            //读取文件中的blog的访问次数
+            readVisitTimes();
+        } catch (IOException e) {
+            log.error("blog的访问次数读取失败："+e);
+        }
+
         return true;
     }
 
+
+    /**
+     * 读取文件中的blog的访问次数
+     * @throws IOException
+     */
+    public void readVisitTimes() throws IOException {
+        List<String> lines = FileUtils.readLines(new File("blogVisitTimes"));
+        for(int i=0;i<lines.size();i+=2){
+            String blogId = lines.get(i);
+            int visitTimes = Integer.parseInt(lines.get(i + 1));
+            ESBlog.blogMap.get(blogId).setVisitTimes(visitTimes);
+        }
+    }
+
+    /**
+     * 将内存中的blog的访问次数保存到文件
+     * @throws IOException
+     */
+    public void writeVisitTimes() throws IOException {
+        Iterator<String> iterator = ESBlog.blogMap.keySet().iterator();
+        StringBuilder sb=new StringBuilder();
+        while(iterator.hasNext()){
+            String blogId = iterator.next();
+            ESBlog esBlog = ESBlog.blogMap.get(blogId);
+            sb.append(blogId);
+            sb.append("\n");
+            sb.append(esBlog.getVisitTimes());
+            sb.append("\n");
+        }
+
+        FileUtils.writeStringToFile(new File("blogVisitTimes"),sb.toString());
+    }
 
 }
