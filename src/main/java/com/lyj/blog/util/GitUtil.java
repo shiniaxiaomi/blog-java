@@ -25,6 +25,7 @@ public class GitUtil {
     //拉取笔记
     public static void gitPull() {
         try {
+            log.debug("笔记拉取中。。。");
             executor.execute(CommandLine.parse("git pull"));
         } catch (IOException e) {
             log.error("笔记拉取失败",e);

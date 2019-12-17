@@ -45,14 +45,6 @@ public class BlogService {
 
     @PostConstruct
     public boolean init() {
-
-        //清除变量
-        DirOrFile.Instance=new DirOrFile();
-        ESBlog.blogMap.clear();
-        ESBlog.htmlMap.clear();
-        ESBlog.list.clear();
-        ESHeader.map.clear();
-
         //拉取笔记
         GitUtil.gitPull();
 
@@ -66,9 +58,11 @@ public class BlogService {
             if (!isDev) {
                 boolean existIndex = elasticsearchService.existIndex("header");
                 if(existIndex){
+                    log.debug("删除elasticsearch索引");
                     elasticsearchService.deleteIndex("header");
                 }
                 //批量添加header数据到elasticsearch
+                log.debug("添加elasticsearch索引");
                 elasticsearchService.addHeaderBulk();
             }
         } catch (IOException e) {
@@ -92,12 +86,42 @@ public class BlogService {
 
         try {
             //读取文件中的blog的访问次数
+            log.debug("读取blog的访问次数。。。");
             readVisitTimes();
         } catch (IOException e) {
             log.error("blog的访问次数读取失败："+e);
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * 手动初始化
+     * @return 是否初始化成功
+     */
+    public boolean initByManual(){
+        try {
+            //先保存访问次数
+            log.debug("保存blog的访问次数。。。");
+            writeVisitTimes();
+        } catch (IOException e) {
+            log.error("blog的访问次数保存失败："+e);
+            return false;
+        }
+
+        //清除变量
+        DirOrFile.Instance=new DirOrFile();
+        ESBlog.blogMap.clear();
+        ESBlog.htmlMap.clear();
+        ESBlog.list.clear();
+        ESHeader.map.clear();
+
+        //正常的初始化
+        boolean init = init();
+
+        return init;
+
     }
 
 
