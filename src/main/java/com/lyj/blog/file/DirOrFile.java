@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class DirOrFile {
 
-    public static DirOrFile Instance;
+    public static DirOrFile Instance=new DirOrFile();
 
     String name;
 

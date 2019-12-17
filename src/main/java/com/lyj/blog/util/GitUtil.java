@@ -25,12 +25,12 @@ public class GitUtil {
     //拉取笔记
     public static void gitPull() {
         try {
-            log.debug("笔记拉取中。。。");
+            log.info("笔记拉取中。。。");
             executor.execute(CommandLine.parse("git pull"));
         } catch (IOException e) {
             log.error("笔记拉取失败",e);
         }
-        log.debug("笔记拉取成功");
+        log.info("笔记拉取成功");
     }
 
 }

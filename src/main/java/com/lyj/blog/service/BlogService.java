@@ -58,11 +58,11 @@ public class BlogService {
             if (!isDev) {
                 boolean existIndex = elasticsearchService.existIndex("header");
                 if(existIndex){
-                    log.debug("删除elasticsearch索引");
+                    log.info("删除elasticsearch索引");
                     elasticsearchService.deleteIndex("header");
                 }
                 //批量添加header数据到elasticsearch
-                log.debug("添加elasticsearch索引");
+                log.info("添加elasticsearch索引");
                 elasticsearchService.addHeaderBulk();
             }
         } catch (IOException e) {
@@ -86,7 +86,7 @@ public class BlogService {
 
         try {
             //读取文件中的blog的访问次数
-            log.debug("读取blog的访问次数。。。");
+            log.info("读取blog的访问次数。。。");
             readVisitTimes();
         } catch (IOException e) {
             log.error("blog的访问次数读取失败："+e);
@@ -103,7 +103,7 @@ public class BlogService {
     public boolean initByManual(){
         try {
             //先保存访问次数
-            log.debug("保存blog的访问次数。。。");
+            log.info("保存blog的访问次数。。。");
             writeVisitTimes();
         } catch (IOException e) {
             log.error("blog的访问次数保存失败："+e);
