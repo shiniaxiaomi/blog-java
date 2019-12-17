@@ -26,6 +26,14 @@ public class PullTimer {
     //凌晨3点自动更新
     @Scheduled(cron = "* * 3 * * ?")
     private void notePull() {
+
+        try {
+            log.debug("执行保存访问次数。。。");
+            blogService.writeVisitTimes();
+        } catch (IOException e) {
+            log.error("保存访问次数失败："+e);
+        }
+
         try{
             log.debug("执行定时任务。。。");
             blogService.init();
