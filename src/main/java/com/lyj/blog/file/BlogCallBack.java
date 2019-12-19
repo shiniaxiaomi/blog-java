@@ -51,7 +51,7 @@ public class BlogCallBack implements CallBack {
                 while(iterator.hasNext()){
                     ESHeader next = iterator.next();
                     if(!next.getHeaderContent().equals("")){
-                        esBlog.setDescription(next.getHeaderContent());
+                        esBlog.setDescription(next.getHeaderContent().replaceAll("\"","'"));
                         break;
                     }
                 }
