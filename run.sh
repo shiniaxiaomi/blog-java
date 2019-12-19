@@ -4,16 +4,24 @@ appName="blog-java"
 app=$(pgrep -f $appName)
 if test ${app}null != "null"
 then
-    # 调用应用接口执行保存操作
-    status=$(curl http://localhost/writeBlogVisitTimes)
-    if test ${status} == 'success'
+    # 是否保存blog访问次数
+    flag=true
+
+    if (( !$flag ))
     then
-        # 如果保存成功，则停止应用
         kill -9 $app
     else
-        # 如果保存失败，停止脚本
-        echo '接口调用失败'
-        exit 0
+        status=$(curl http://localhost/writeBlogVisitTimes)
+        if (( $status == 'success' ))
+        then
+            # 如果保存成功，则停止应用
+            kill -9 $app
+        else
+            # 如果保存失败，停止脚本
+            echo '接口调用失败'
+            exit 0
+        fi
+
     fi
 fi
 
