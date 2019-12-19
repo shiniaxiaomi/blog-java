@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
-    <title>${blogName!} | 陆英杰的博客</title>
+    <title>${blogName!}陆英杰的博客</title>
     <meta name="author" content="陆英杰,luyingjie">
     <meta name="keywords" content="java,陆英杰,陆英杰的博客,luyingjie,${headers!}"/>
     <meta name="description" content="${description!}">
@@ -152,13 +152,18 @@
 
     </div>
 
-    <!-- 博客内容（放在app外面，避免被vue解析） -->
+    <!-- 博客内容（避免被vue解析） -->
     <div id="blog" class="markdown-body">
         ${blog!}
     </div>
 
     <!-- 用于blogName的复制 -->
     <input id="blogName" style="display: none" value="editnote ${blogName!}" />
+
+    <!-- 工信部备案号 -->
+    <div style="text-align: center">
+        <a href="http://www.beian.miit.gov.cn" style="color: #767676;text-decoration: none;">ICP证 : 浙ICP备18021271号</a>
+    </div>
 </body>
 <!--vue.js-->
 <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>

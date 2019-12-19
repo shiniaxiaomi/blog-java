@@ -51,7 +51,6 @@ public class IndexController {
         String s = ESBlog.htmlMap.get("/README");
         ESBlog esBlog = ESBlog.blogMap.get("/README");
         index.addObject("blog",s);
-        index.addObject("blogName","首页");
         index.addObject("headers",esBlog.getHeaders());
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
@@ -73,7 +72,7 @@ public class IndexController {
         }
         ESBlog esBlog = ESBlog.blogMap.get(blogName);
         index.addObject("blog",s);
-        index.addObject("blogName",esBlog.getBlogName());
+        index.addObject("blogName",esBlog.getBlogName()+" | ");
         index.addObject("headers",esBlog.getHeaders());
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
