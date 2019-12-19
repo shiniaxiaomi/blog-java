@@ -1,3 +1,16 @@
+p, li {
+    color: rgba(0,0,0,0.65) !important;
+}
+
+/*代码块背景*/
+:not(pre)>code[class*=language-], pre[class*=language-] {
+    background-color: #f6f8fa;
+}
+.token.comment{
+    color: rgb(39, 105, 23);
+}
+/*代码块背景*/
+
 .top-body{
     box-sizing: border-box;
     min-width: 200px;
