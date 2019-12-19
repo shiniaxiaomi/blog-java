@@ -1,12 +1,10 @@
 package com.lyj.blog.service;
 
 import com.lyj.blog.file.DirOrFile;
+import com.sun.jmx.remote.internal.ArrayQueue;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 根据path路径返回对应的路径下的目录结构
@@ -44,5 +42,37 @@ public class DirService {
             return new ArrayList<>();//如果没找到，则返回[]
         }
     }
+
+    //获取SEO数据
+    public String getSEOData(){
+        StringBuilder sb = new StringBuilder();
+        DirOrFile dirOrFile = DirOrFile.Instance.getChild().get(0);
+        _getSEOData(dirOrFile,sb);
+        return sb.toString();
+    }
+
+    private void _getSEOData(DirOrFile dirOrFile,StringBuilder sb){
+        //如果没有孩子，直接保存
+        if(dirOrFile.getChild()==null){
+            buildBlogLink(dirOrFile,sb);
+            return;
+        }
+
+        //遍历并保存孩子节点
+        List<DirOrFile> childs = dirOrFile.getChild();
+        for(int i=0;i<childs.size();i++){
+            _getSEOData(childs.get(i),sb);
+        }
+
+    }
+
+    private void buildBlogLink(DirOrFile dirOrFile,StringBuilder sb){
+        sb.append("<a href='/blog");
+        sb.append(dirOrFile.getUrl());
+        sb.append("'>");
+        sb.append(dirOrFile.getName());
+        sb.append("</a><br>");
+    }
+
 
 }

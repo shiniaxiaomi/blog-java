@@ -31,7 +31,7 @@ public class PullTimer {
     String blogVisitTimesFilePath;
 
     //凌晨3点自动更新
-    @Scheduled(cron = "* * 3 * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     private void notePull() {
         boolean b = blogService.initByManual();
         if(!b){
@@ -40,7 +40,7 @@ public class PullTimer {
     }
 
     //凌晨4点备份blogVisitTimes文件
-    @Scheduled(cron = "* * 4 * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     private void backupVisitTimes() {
         try {
             FileUtils.copyFile(new File(blogVisitTimesFilePath+"blogVisitTimes"),new File(blogVisitTimesFilePath+"blogVisitTimes-"+LocalDateTime.now()));

@@ -56,6 +56,7 @@ public class IndexController {
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
         index.addObject("visitTimes",esBlog.getAndIncrVisitTimes());//获取访问次数并自增
+        index.addObject("SEOData",VarUtil.SEOData);//全部博客的链接
         return index;
     }
 
@@ -77,6 +78,7 @@ public class IndexController {
         index.addObject("description",esBlog.getDescription());
         index.addObject("dirData", VarUtil.dirData);//全部目录及链接
         index.addObject("visitTimes",esBlog.getAndIncrVisitTimes());//获取访问次数并自增
+
         return index;
     }
 
@@ -187,6 +189,13 @@ public class IndexController {
     //blog/路径xxx：返回对应的博客页面
     //getHeader/指定博客：返回对应博客的大纲
     //getDir：返回博客的目录结构
+
+//    @RequestMapping("test")
+//    @ResponseBody
+//    public String test(){
+//        String seoData = dirService.getSEOData();
+//        return seoData;
+//    }
 
 
 }

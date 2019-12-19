@@ -81,7 +81,7 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
 
             //还在保留单个文件中的所有header
             BlogCallBack.sb.append(headerName);
-            BlogCallBack.sb.append("|");
+            BlogCallBack.sb.append(",");
 
         }catch (Exception e){
             log.error("header解析错误:"+ heading,e);

@@ -83,6 +83,7 @@ public class BlogService {
 
         //创建全目录字符串
         VarUtil.dirData= JSON.toJSONString(dirService.getDir("/"));
+        VarUtil.SEOData= dirService.getSEOData();
 
         try {
             //读取文件中的blog的访问次数
