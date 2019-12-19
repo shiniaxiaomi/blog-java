@@ -40,9 +40,7 @@ public class ImageRender implements NodeRenderer, HtmlNodeRendererFactory {
     public void render(Node node) {
         Image image = (Image) node;
         try {
-            html.tag("p style='text-align: center'");//让图片居中
             html.tag("img src='/loading.gif' buff='" + image.getDestination().substring(VarUtil.getImagePathLength()) + "'");//将src先设置成loading图片，之后在js中加载真正的图片
-            html.tag("p");
         }catch (Exception e){
             log.error("图片解析错误:"+image.getDestination(),e);
         }

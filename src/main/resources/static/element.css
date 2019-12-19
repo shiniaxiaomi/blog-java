@@ -93,3 +93,9 @@ code[class*=language-], pre[class*=language-] {
     list-style-type: decimal;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
+
+/*图片剧中*/
+img{
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
