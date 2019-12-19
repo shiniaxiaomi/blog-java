@@ -8,9 +8,6 @@ import com.lyj.blog.service.BlogService;
 import com.lyj.blog.service.DirService;
 import com.lyj.blog.service.ElasticsearchService;
 import com.lyj.blog.util.VarUtil;
-import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +28,6 @@ import java.util.List;
  */
 
 
-@Slf4j
 @Controller
 @RequestMapping
 public class IndexController {
@@ -152,7 +148,7 @@ public class IndexController {
         try {
             blogService.writeVisitTimes();
         } catch (IOException e) {
-            log.error("blog的访问次数保存失败："+e);
+            System.out.println("blog的访问次数保存失败："+e);
             return "error";
         }
 
@@ -169,7 +165,7 @@ public class IndexController {
         try {
             blogService.readVisitTimes();
         } catch (IOException e) {
-            log.error("blog的访问次数读取失败："+e);
+            System.out.println("blog的访问次数读取失败："+e);
             return "blog的访问次数读取失败";
         }
 

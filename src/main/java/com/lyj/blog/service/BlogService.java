@@ -6,7 +6,6 @@ import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.*;
 import com.lyj.blog.util.GitUtil;
 import com.lyj.blog.util.VarUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * blog的service，用于启动博客的渲染
@@ -26,7 +24,6 @@ import java.util.Set;
  * @date 2019/12/11 3:31 下午
  */
 
-@Slf4j
 @Service
 public class BlogService {
 
@@ -58,15 +55,15 @@ public class BlogService {
             if (!isDev) {
                 boolean existIndex = elasticsearchService.existIndex("header");
                 if(existIndex){
-                    log.info("删除elasticsearch索引");
+                    System.out.println("删除elasticsearch索引");
                     elasticsearchService.deleteIndex("header");
                 }
                 //批量添加header数据到elasticsearch
-                log.info("添加elasticsearch索引");
+                System.out.println("添加elasticsearch索引");
                 elasticsearchService.addHeaderBulk();
             }
         } catch (IOException e) {
-            log.error("elasticsearch异常",e);
+            System.out.println("elasticsearch异常:"+e);
             return false;
         }
 
@@ -87,10 +84,10 @@ public class BlogService {
 
         try {
             //读取文件中的blog的访问次数
-            log.info("读取blog的访问次数。。。");
+            System.out.println("读取blog的访问次数。。。");
             readVisitTimes();
         } catch (IOException e) {
-            log.error("blog的访问次数读取失败："+e);
+            System.out.println("blog的访问次数读取失败："+e);
             return false;
         }
 
@@ -104,10 +101,10 @@ public class BlogService {
     public boolean initByManual(){
         try {
             //先保存访问次数
-            log.info("保存blog的访问次数。。。");
+            System.out.println("保存blog的访问次数。。。");
             writeVisitTimes();
         } catch (IOException e) {
-            log.error("blog的访问次数保存失败："+e);
+            System.out.println("blog的访问次数保存失败："+e);
             return false;
         }
 

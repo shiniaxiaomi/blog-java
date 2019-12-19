@@ -3,7 +3,6 @@ package com.lyj.blog.render;
 import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.BlogCallBack;
-import lombok.extern.slf4j.Slf4j;
 import org.commonmark.node.*;
 import org.commonmark.renderer.NodeRenderer;
 import org.commonmark.renderer.html.HtmlNodeRendererContext;
@@ -21,7 +20,6 @@ import java.util.Set;
  * @date 2019/12/4 5:12 下午
  */
 
-@Slf4j
 public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
 
     private HtmlWriter html;
@@ -84,7 +82,7 @@ public class HeadingRender implements NodeRenderer, HtmlNodeRendererFactory {
             BlogCallBack.sb.append(",");
 
         }catch (Exception e){
-            log.error("header解析错误:"+ heading,e);
+            System.out.println("header解析错误:"+ heading+",异常:"+e);
         }
 
     }

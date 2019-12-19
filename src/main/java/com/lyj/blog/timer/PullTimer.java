@@ -1,7 +1,6 @@
 package com.lyj.blog.timer;
 
 import com.lyj.blog.service.BlogService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 
 
 @Component
-@Slf4j
 public class PullTimer {
 
     @Autowired
@@ -35,7 +33,7 @@ public class PullTimer {
     private void notePull() {
         boolean b = blogService.initByManual();
         if(!b){
-            log.error("手动更新失败！！！");
+            System.out.println("手动更新失败！！！");
         }
     }
 
@@ -45,7 +43,7 @@ public class PullTimer {
         try {
             FileUtils.copyFile(new File(blogVisitTimesFilePath+"blogVisitTimes"),new File(blogVisitTimesFilePath+"blogVisitTimes-"+LocalDateTime.now()));
         } catch (IOException e) {
-            log.error("blog访问次数备份失败");
+            System.out.println("blog访问次数备份失败");
         }
 
     }
