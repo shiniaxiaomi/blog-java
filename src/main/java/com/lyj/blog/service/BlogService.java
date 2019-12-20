@@ -134,7 +134,10 @@ public class BlogService {
             for(int i=0;i<lines.size();i+=2){
                 String blogId = lines.get(i);
                 int visitTimes = Integer.parseInt(lines.get(i + 1));
-                ESBlog.blogMap.get(blogId).setVisitTimes(visitTimes);
+                ESBlog esBlog = ESBlog.blogMap.get(blogId);
+                if(esBlog!=null){
+                    esBlog.setVisitTimes(visitTimes);
+                }
             }
         }else{
             //如果文件不存在，则创建
