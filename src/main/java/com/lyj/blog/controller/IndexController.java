@@ -57,15 +57,12 @@ public class IndexController {
 
     @RequestMapping("blog/**")
     public ModelAndView blog(HttpServletRequest servletRequest){
-
-
         ModelAndView index = new ModelAndView("index");
-
         String blogName = servletRequest.getServletPath().substring(5);
-        String s = ESBlog.htmlMap.get(blogName);
-        if(s==null){
-            s = ESBlog.htmlMap.get("/README");//返回首页
+        if(!ESBlog.htmlMap.containsKey(blogName)){
+            blogName="/README";//如果不存咋，则返回首页
         }
+        String s = ESBlog.htmlMap.get(blogName);
         ESBlog esBlog = ESBlog.blogMap.get(blogName);
         index.addObject("blog",s);
         index.addObject("blogName",esBlog.getBlogName()+" | ");
