@@ -9,6 +9,8 @@ import com.lyj.blog.util.VarUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +27,7 @@ import java.util.List;
  */
 
 @Service
-public class BlogService {
+public class BlogService implements ApplicationRunner {
 
 
     @Autowired
@@ -40,7 +42,12 @@ public class BlogService {
     @Autowired
     private DirService dirService;
 
-    @PostConstruct
+    //项目启动成功后执行init方法
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        init();
+    }
+
     public void init() {
         //拉取笔记
         GitUtil.gitPull();
