@@ -31,10 +31,8 @@ public class PullTimer {
     //凌晨3点自动更新
     @Scheduled(cron = "0 0 3 * * ?")
     private void notePull() {
-        boolean b = blogService.initByManual();
-        if(!b){
-            System.out.println("手动更新失败！！！");
-        }
+        blogService.initByManual();
+        System.out.println("手动更新成功！！！");
     }
 
     //凌晨4点备份blogVisitTimes文件

@@ -126,13 +126,8 @@ public class IndexController {
     @RequestMapping("pull")
     @ResponseBody
     public String manualPull(){
-        boolean init = blogService.init();
-        if (init){
-            return "博客更新成功";
-        }else {
-            return "博客更新失败";
-        }
-
+        blogService.initByManual();
+        return "博客更新成功";
     }
 
     /**

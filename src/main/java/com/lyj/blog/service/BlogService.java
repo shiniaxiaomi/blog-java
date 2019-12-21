@@ -41,34 +41,22 @@ public class BlogService {
     private DirService dirService;
 
     @PostConstruct
-    public boolean init() {
+    public void init() {
         //拉取笔记
         GitUtil.gitPull();
+
+        //清除变量
+        DirOrFile.Instance=new DirOrFile();
+        ESBlog.htmlMap.clear();
+        ESHeader.map.clear();
+        ESBlog.list.clear();
+        ESBlog.blogMap.clear();
 
         //遍历目录，渲染笔记
         FileUtil.mapDir(new File(VarUtil.notePath),
                 new DirFilter(), new BlogFilter(),
                 new DirCallBack(), new BlogCallBack(), DirOrFile.Instance);
 
-        //是否清除和添加elasticsearch的数据
-        try {
-            if (!isDev) {
-                boolean existIndex = elasticsearchService.existIndex("header");
-                if(existIndex){
-                    System.out.println("删除elasticsearch索引");
-                    elasticsearchService.deleteIndex("header");
-                }
-                //批量添加header数据到elasticsearch
-                System.out.println("添加elasticsearch索引");
-                elasticsearchService.addHeaderBulk();
-            }
-        } catch (IOException e) {
-            System.out.println("elasticsearch异常:"+e);
-            return false;
-        }
-
-
-        //==========================扫尾工作===========================
         //将list转为map，保存blog的基本信息
         for(int i=0;i< ESBlog.list.size();i++){
             ESBlog esBlog = ESBlog.list.get(i);
@@ -88,38 +76,40 @@ public class BlogService {
             readVisitTimes();
         } catch (IOException e) {
             System.out.println("blog的访问次数读取失败："+e);
-            return false;
         }
 
-        return true;
+        //是否清除和添加elasticsearch的数据
+        try {
+            if (!isDev) {
+                boolean existIndex = elasticsearchService.existIndex("header");
+                if(existIndex){
+                    System.out.println("删除elasticsearch索引");
+                    elasticsearchService.deleteIndex("header");
+                }
+                //批量添加header数据到elasticsearch
+                System.out.println("添加elasticsearch索引");
+                elasticsearchService.addHeaderBulk();
+            }
+        } catch (IOException e) {
+            System.out.println("elasticsearch异常:"+e);
+        }
     }
 
     /**
      * 手动初始化
      * @return 是否初始化成功
      */
-    public boolean initByManual(){
+    public void initByManual(){
         try {
             //先保存访问次数
             System.out.println("保存blog的访问次数。。。");
             writeVisitTimes();
         } catch (IOException e) {
             System.out.println("blog的访问次数保存失败："+e);
-            return false;
         }
 
-        //清除变量
-        DirOrFile.Instance=new DirOrFile();
-        ESBlog.blogMap.clear();
-        ESBlog.htmlMap.clear();
-        ESBlog.list.clear();
-        ESHeader.map.clear();
-
         //正常的初始化
-        boolean init = init();
-
-        return init;
-
+        init();
     }
 
 
@@ -128,9 +118,9 @@ public class BlogService {
      * @throws IOException
      */
     public void readVisitTimes() throws IOException {
-        File file = new File(blogVisitTimesFilePath + "blogVisitTimes");
-        if(file.exists()){
-            List<String> lines = FileUtils.readLines(file);
+        boolean exist = isBlogVisitTimeFileExist();
+        if(exist){
+            List<String> lines = FileUtils.readLines(new File(blogVisitTimesFilePath + "blogVisitTimes"));
             for(int i=0;i<lines.size();i+=2){
                 String blogId = lines.get(i);
                 int visitTimes = Integer.parseInt(lines.get(i + 1));
@@ -143,7 +133,6 @@ public class BlogService {
             //如果文件不存在，则创建
             writeVisitTimes();
         }
-
     }
 
     /**
@@ -163,6 +152,15 @@ public class BlogService {
         }
 
         FileUtils.writeStringToFile(new File(blogVisitTimesFilePath+"blogVisitTimes"),sb.toString());
+    }
+
+    private boolean isBlogVisitTimeFileExist(){
+        File file = new File(blogVisitTimesFilePath + "blogVisitTimes");
+        if(file.exists()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }
