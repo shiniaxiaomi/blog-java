@@ -1,7 +1,7 @@
 # 关闭应用
 #应用名称
 appName="blog-java"
-app=$(pgrep -f $appName)
+app=$(pgrep -f java)
 if test ${app}null != "null"
 then
     # 是否保存blog访问次数
