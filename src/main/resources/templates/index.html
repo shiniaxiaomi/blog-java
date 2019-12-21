@@ -28,7 +28,6 @@
     <link href="/code.css" rel="stylesheet">
 </head>
 
-<!-- style="background-color: #b4b2b238"-->
 <body>
     <div id="app" class="top-body">
 
@@ -194,6 +193,8 @@
     var W_key=119;
     var c_key=67;
     var C_key=99;
+    var a_key=65;
+    var A_key=97;
     document.onkeypress=function (event) {
         var key = event.keyCode;
 
@@ -204,6 +205,8 @@
         }else if(event.shiftKey && (key==w_key || key==W_key)){
             vue.dir_drawer=!vue.dir_drawer;
             event.preventDefault();//阻止默认事件
+        }else if(event.shiftKey && (key==a_key || key==A_key)){
+            window.location="/dirSearch";
         }else if(event.shiftKey && (key==c_key || key==C_key)){
             //将笔记的名称保存到剪贴板中
             var blogName=document.getElementById("blogName");
@@ -214,20 +217,11 @@
         }
     }
 
-    //懒加载图片
-    window.onload = function() {
-        var imgs=document.getElementsByTagName("img");
-        for(var i=0;i<imgs.length;i++){
-            var img=imgs[i];
-            if(img.attributes.length!=0){
-                img.src=window.location.origin+img.attributes.buff.value;
-            }
-        }
-    };
-
     var vue=new Vue({
         el: '#app',
         data: {
+            isMobile:window.innerWidth<576,
+
             //outline
             headerSearchInput:"",
             headerData:[],
@@ -404,6 +398,10 @@
             },
             //根据标签页使得对应输入框获取焦点
             focus_outline(){
+                //手机不聚焦
+                if(this.isMobile){
+                    return;
+                }
                 if(this.outline_tab_active_value=="0"){
                     setTimeout(function () {
                         document.getElementById("headerSearchInput").focus();
@@ -416,6 +414,10 @@
             },
             //根据标签页使得对应输入框获取焦点
             focus_search(){
+                //手机不聚焦
+                if(this.isMobile){
+                    return;
+                }
                 if(this.search_tab_active_value=="0"){
                     setTimeout(function () {
                         document.getElementById("searchAllInput").focus();
@@ -506,6 +508,17 @@
             }
         })
     }
+
+    //懒加载图片
+    window.onload = function() {
+        var imgs=document.getElementsByTagName("img");
+        for(var i=0;i<imgs.length;i++){
+            var img=imgs[i];
+            if(img.attributes.length!=0){
+                img.src=window.location.origin+img.attributes.buff.value;
+            }
+        }
+    };
 </script>
 
 <!--SEO-->

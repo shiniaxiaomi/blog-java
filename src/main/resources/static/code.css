@@ -1,3 +1,9 @@
+/*代码块字体大小*/
+pre>code{
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
 /*代码块背景*/
 :not(pre)>code[class*=language-], pre[class*=language-] {
     background-color: #f1f3f7;
@@ -5,8 +11,8 @@
 /*代码块背景*/
 
 /*方法和类名*/
-.token.function {
-    color: #ca210b;
+.token.class-name, .token.function {
+    color: #24292e;
 }
 
 /*关键词*/
@@ -22,6 +28,12 @@
 /*注解*/
 .token.punctuation {
     color: #66a4c3;
+}
+
+/*选中代码时*/
+::selection {
+    background: rgba(164,205,253,.7) !important;
+    color: #000;
 }
 
 
