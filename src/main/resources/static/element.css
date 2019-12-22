@@ -101,3 +101,8 @@ img{
     margin-left: 50%;
     transform: translateX(-50%);
 }
+
+/*解决element刷新后页面闪动的问题*/
+[v-cloak] {
+    display: none !important;
+}
