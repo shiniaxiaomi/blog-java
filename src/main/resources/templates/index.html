@@ -154,20 +154,25 @@
 
             </el-drawer>
 
+        <!-- 博客内容 -->
+        <div id="blog" class="markdown-body" v-pre>
+            ${blog!}
+        </div>
+
+        <!-- 用于blogName的复制 -->
+        <input id="blogName" style="display: none" value="editnote ${blogName!}" />
+
+        <!-- 工信部备案号 -->
+        <div style="text-align: center">
+            <a href="http://www.beian.miit.gov.cn" style="color: #767676;text-decoration: none;">ICP证 : 浙ICP备18021271号</a>
+        </div>
+
+        <!--SEO-->
+        <div style="display: none">
+            ${SEOData!}
+        </div>
     </div>
 
-    <!-- 博客内容（避免被vue解析） -->
-    <div id="blog" class="markdown-body">
-        ${blog!}
-    </div>
-
-    <!-- 用于blogName的复制 -->
-    <input id="blogName" style="display: none" value="editnote ${blogName!}" />
-
-    <!-- 工信部备案号 -->
-    <div style="text-align: center">
-        <a href="http://www.beian.miit.gov.cn" style="color: #767676;text-decoration: none;">ICP证 : 浙ICP备18021271号</a>
-    </div>
 </body>
 <!--vue.js-->
 <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
@@ -521,8 +526,4 @@
     };
 </script>
 
-<!--SEO-->
-<div style="display: none">
-    ${SEOData!}
-</div>
 </html>
