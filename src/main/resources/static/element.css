@@ -31,12 +31,9 @@ min-width: 200px;
 max-width: 980px;
 margin: 0 auto;
 padding: 0px 10px 45px 10px;
+    font-size: 17px;
 }
 
-/*设置代码块中的字体大小*/
-code[class*=language-], pre[class*=language-] {
-    font-size: 13px;
-}
 
 @media (max-width: 767px) {
     .top-body{
@@ -100,6 +97,7 @@ code[class*=language-], pre[class*=language-] {
 img{
     margin-left: 50%;
     transform: translateX(-50%);
+    padding: 10px 0 0 0;
 }
 
 /*解决element刷新后页面闪动的问题*/
