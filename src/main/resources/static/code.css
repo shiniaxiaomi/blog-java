@@ -1,8 +1,4 @@
-/*代码块字体大小*/
-pre>code{
-    font-size: 14px !important;
-    line-height: 1.8 !important;
-}
+
 
 /*代码块背景*/
 :not(pre)>code[class*=language-], pre[class*=language-] {

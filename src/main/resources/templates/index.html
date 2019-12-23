@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow-x:hidden;">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -13,6 +13,10 @@
     <link href="https://cdn.bootcss.com/element-ui/2.12.0/theme-chalk/index.css" rel="stylesheet">
     <!-- import github-markdown CSS -->
     <link href="https://cdn.bootcss.com/github-markdown-css/3.0.1/github-markdown.min.css" rel="stylesheet">
+    <!-- import header CSS -->
+    <link href="/header.css" rel="stylesheet">
+    <!-- import element-user CSS -->
+    <link href="/element.css" rel="stylesheet">
     <!-- import 代码高亮 CSS -->
     <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-solarizedlight.min.css" rel="stylesheet">
 <!--    <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism.min.css" rel="stylesheet">-->
@@ -20,10 +24,7 @@
     <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
     <!-- import 代码块工具条 CSS -->
     <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
-    <!-- import header CSS -->
-    <link href="/header.css" rel="stylesheet">
-    <!-- import element-user CSS -->
-    <link href="/element.css" rel="stylesheet">
+
     <!-- import code CSS -->
     <link href="/code.css" rel="stylesheet">
 </head>
@@ -163,7 +164,7 @@
         <input id="blogName" style="display: none" value="editnote ${blogName!}" />
 
         <!-- 工信部备案号 -->
-        <div style="text-align: center">
+        <div style="text-align: center;margin-top: 20px">
             <a href="http://www.beian.miit.gov.cn" style="color: #767676;text-decoration: none;">ICP证 : 浙ICP备18021271号</a>
         </div>
 
@@ -189,7 +190,7 @@
 <!--代码工具条js-->
 <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.js"></script>
 <!--代码复制js-->
-<script src="https://cdn.bootcss.com/prism/1.17.1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+<script src="/prism-copy-to-clipboard.min.js"></script>
 <script>
     //全局快捷键
     var q_key=81;
