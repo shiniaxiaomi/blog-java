@@ -20,6 +20,6 @@ public class MyHandler {
 
     @ExceptionHandler(Exception.class)
     public void handler(HttpServletRequest request, HttpServletResponse response, Exception e){
-        log.error("Controller请求异常：{},异常为：",request.getServletPath(),e);
+        log.error("Controller请求异常：{},异常为：{}",request.getServletPath(),e);
     }
 }
