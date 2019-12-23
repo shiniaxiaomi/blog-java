@@ -7,7 +7,7 @@ then
     # 是否保存blog访问次数
     flag=true
 
-    if (( $flag != 'true' ))
+    if [ $flag != "true" ]
     then
         kill -9 $app
     else
