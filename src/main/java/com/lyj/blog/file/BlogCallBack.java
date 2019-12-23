@@ -23,7 +23,6 @@ public class BlogCallBack implements CallBack {
 
     @Override
     public void callback(File file) {
-//        System.out.println(file.getName());
 
         try {
             String note = FileUtils.readFileToString(file);//笔记源码

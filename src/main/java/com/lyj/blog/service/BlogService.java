@@ -6,6 +6,7 @@ import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.*;
 import com.lyj.blog.util.GitUtil;
 import com.lyj.blog.util.VarUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -27,6 +27,7 @@ import java.util.List;
  */
 
 @Service
+@Slf4j
 public class BlogService implements ApplicationRunner {
 
 
@@ -79,10 +80,10 @@ public class BlogService implements ApplicationRunner {
 
         try {
             //读取文件中的blog的访问次数
-            System.out.println("读取blog的访问次数。。。");
+            log.info("读取blog的访问次数。。。");
             readVisitTimes();
         } catch (IOException e) {
-            System.out.println("blog的访问次数读取失败："+e);
+            log.error("blog的访问次数读取失败:",e);
         }
 
         //是否清除和添加elasticsearch的数据
@@ -90,15 +91,15 @@ public class BlogService implements ApplicationRunner {
             if (!isDev) {
                 boolean existIndex = elasticsearchService.existIndex("header");
                 if(existIndex){
-                    System.out.println("删除elasticsearch索引");
+                    log.info("删除elasticsearch索引");
                     elasticsearchService.deleteIndex("header");
                 }
                 //批量添加header数据到elasticsearch
-                System.out.println("添加elasticsearch索引");
+                log.info("添加elasticsearch索引");
                 elasticsearchService.addHeaderBulk();
             }
         } catch (IOException e) {
-            System.out.println("elasticsearch异常:"+e);
+            log.error("elasticsearch异常:",e);
         }
     }
 
@@ -109,10 +110,10 @@ public class BlogService implements ApplicationRunner {
     public void initByManual(){
         try {
             //先保存访问次数
-            System.out.println("保存blog的访问次数。。。");
+            log.info("保存blog的访问次数。。。");
             writeVisitTimes();
         } catch (IOException e) {
-            System.out.println("blog的访问次数保存失败："+e);
+            log.error("blog的访问次数保存失败：",e);
         }
 
         //正常的初始化

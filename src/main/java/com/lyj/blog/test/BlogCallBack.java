@@ -1,17 +1,10 @@
 package com.lyj.blog.test;
 
-import com.lyj.blog.ESmodel.ESBlog;
-import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.file.CallBack;
-import com.lyj.blog.file.FileUtil;
-import com.lyj.blog.util.MDUtil;
-import com.lyj.blog.util.VarUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * 当扫描到一个blog的时候的回调，在回调中将笔记源码渲染成html，并提取出相关的信息，用于Elasticsearch的搜索
@@ -24,7 +17,6 @@ public class BlogCallBack implements CallBack {
 
     @Override
     public void callback(File file) {
-        System.out.println(file.getName());
         try {
             String note = FileUtils.readFileToString(file);//笔记源码
             note=note.replace("[TOC]\n\n","");//替换笔记的toc目录

@@ -1,14 +1,12 @@
 package com.lyj.blog.service;
 
-import com.lyj.blog.ESmodel.ESBlog;
 import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.util.VarUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.MultiSearchRequest;
-import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
@@ -17,14 +15,17 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.Randomness;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.callback.ConfirmationCallback;
 import java.io.IOException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Elasticsearch相关的操作
@@ -34,6 +35,7 @@ import java.util.*;
  */
 
 @Service
+@Slf4j
 public class ElasticsearchService {
 
     @Autowired
@@ -61,7 +63,11 @@ public class ElasticsearchService {
 
         //通过client创建批量添加索引
         BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
-        System.out.println(bulkResponse);
+        if (bulkResponse.status().getStatus()== 200) {
+            log.info("elasticsearch初始化批量添加成功");
+        }else{
+            log.error("elasticsearch初始化批量添加成功");
+        }
     }
 
     //查询所有的header
