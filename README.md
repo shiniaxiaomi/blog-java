@@ -1,3 +1,10 @@
+# 介绍
+
+通过解析markdown文件来构建自己的博客，通过使用elasticsearch达到全文检索
+
+博客链接：www.luyingjie.cn
+
+
 # 说明
 - PC端
   1. 导航栏：Shift+Q
