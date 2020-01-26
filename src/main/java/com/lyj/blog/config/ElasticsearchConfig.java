@@ -14,7 +14,7 @@ import org.springframework.data.elasticsearch.client.RestClients;
  * @date 2019/12/4 10:17 上午
  */
 
-@Configuration
+//@Configuration
 public class ElasticsearchConfig {
 
     @Value("${elasticsearch.hostAndPort}")

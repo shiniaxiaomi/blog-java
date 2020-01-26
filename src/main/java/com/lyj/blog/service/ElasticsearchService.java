@@ -1,6 +1,5 @@
 package com.lyj.blog.service;
 
-import com.lyj.blog.ESmodel.ESHeader;
 import com.lyj.blog.util.VarUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -20,12 +19,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.security.auth.callback.ConfirmationCallback;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Elasticsearch相关的操作
@@ -34,7 +29,7 @@ import java.util.List;
  * @date 2019/12/11 12:50 下午
  */
 
-@Service
+//@Service
 @Slf4j
 public class ElasticsearchService {
 
@@ -46,20 +41,20 @@ public class ElasticsearchService {
         //创建index请求
         BulkRequest request = new BulkRequest();
 
-        Iterator<String> iterator = ESHeader.map.keySet().iterator();
-        while(iterator.hasNext()){
-            List<ESHeader> headerList = ESHeader.map.get(iterator.next());
-            for(ESHeader header:headerList){
-                //添加数据
-                request.add(new IndexRequest("header", "doc", String.valueOf(Randomness.get().nextInt()))
-                        .source(XContentType.JSON,
-                                "headerName", header.getHeaderName(),
-                                "blogId",header.getBlogId(),
-                                "blogName",header.getBlogName(),
-                                "headerContent",header.getHeaderContent(),
-                                "level",header.getLevel()));
-            }
-        }
+//        Iterator<String> iterator = ESHeader.map.keySet().iterator();
+//        while(iterator.hasNext()){
+//            List<ESHeader> headerList = ESHeader.map.get(iterator.next());
+//            for(ESHeader header:headerList){
+//                //添加数据
+//                request.add(new IndexRequest("header", "doc", String.valueOf(Randomness.get().nextInt()))
+//                        .source(XContentType.JSON,
+//                                "headerName", header.getHeaderName(),
+//                                "blogId",header.getBlogId(),
+//                                "blogName",header.getBlogName(),
+//                                "headerContent",header.getHeaderContent(),
+//                                "level",header.getLevel()));
+//            }
+//        }
 
         //通过client创建批量添加索引
         BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);

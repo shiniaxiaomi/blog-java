@@ -1,0 +1,63 @@
+body {
+    padding-top: 50px;
+    background-color: #f4f5f5;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.whiteBlock {
+    background-color: #FFF;
+    padding: 14px;
+    margin: 10px -8px 0 -8px;
+}
+
+/*每个blog的描述样式*/
+.blog-description img {
+    max-width: 100%;
+    margin: 10px 0 10px 0;
+}
+
+.blog-description p {
+    color: #999;
+    margin-bottom: 16px;
+    font-size: 17px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+.blue {
+    color: #68b6ff !important;
+}
+
+.custom-nav {
+    background-color: #FFF;
+}
+
+.icon-content {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 18px;
+    color: #fff;
+    background: #ccc !important;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 8px 0 8px;
+}
+
+.icon-body {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 18px;
+    display: flex;
+    align-items: center; /*定义body的元素垂直居中*/
+    justify-content: center; /*定义body的里的元素水平居中*/
+}
+
+.center {
+    display: block;
+    text-align: center;
+}
