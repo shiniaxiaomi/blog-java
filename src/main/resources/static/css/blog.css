@@ -1,40 +1,29 @@
 body {
-    padding-top: 50px;
+    padding-top: 65px;
     background-color: #f4f5f5;
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .whiteBlock {
     background-color: #FFF;
-    padding: 14px;
+    padding: 20px;
     margin: 10px -8px 0 -8px;
 }
 
-/*每个blog的描述样式*/
-.blog-description img {
-    max-width: 100%;
-    margin: 10px 0 10px 0;
+.center{
+    text-align: center;
 }
 
-.blog-description p {
-    color: #999;
-    margin-bottom: 16px;
-    font-size: 17px;
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+.navbar{
+    padding: 5px;
 }
 
-.blue {
-    color: #68b6ff !important;
+/*自定义徽章颜色*/
+.badge-blue{
+    background-color: #337ab7;
+    color: #fff;
 }
 
-.custom-nav {
-    background-color: #FFF;
-}
-
+/*图标*/
 .icon-content {
     width: 28px;
     height: 28px;
@@ -57,7 +46,29 @@ body {
     justify-content: center; /*定义body的里的元素水平居中*/
 }
 
-.center {
-    display: block;
-    text-align: center;
+/*定义自己的icon的大小*/
+.myIcon{
+    width: 20px;
+    height: 20px;
+    margin-top: -3px;
 }
+
+/*设置链接的文字颜色*/
+a,.btn-link{
+    color: #3b86d8;
+}
+
+/*设置markdown中的图片大小*/
+.markdown-body img{
+    max-width: 100%;
+}
+
+/*85%视窗*/
+.vh-85{
+    height: 85vh;
+}
+/*65%视窗*/
+.vh-65{
+    height: 65vh;
+}
+

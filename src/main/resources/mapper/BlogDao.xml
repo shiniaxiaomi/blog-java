@@ -8,9 +8,11 @@
     <result column="descHtml" jdbcType="VARCHAR" property="descHtml" />
     <result column="md" jdbcType="VARCHAR" property="md" />
     <result column="mdHtml" jdbcType="VARCHAR" property="mdHtml" />
+    <result column="tocHtml" jdbcType="VARCHAR" property="tocHtml" />
     <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="hot" jdbcType="INTEGER" property="hot" />
+    <result column="tagNames" jdbcType="VARCHAR" property="tagNames" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, `desc`, descHtml, md, mdHtml, createTime, updateTime, hot
+    id, `name`, `desc`, descHtml, md, mdHtml, tocHtml, createTime, updateTime, hot, tagNames
   </sql>
   <select id="selectByExample" parameterType="com.lyj.blog.model.BlogExample" resultMap="BaseResultMap">
     select
@@ -105,11 +107,13 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lyj.blog.model.Blog" useGeneratedKeys="true">
     insert into blog (`name`, `desc`, descHtml, 
-      md, mdHtml, createTime, 
-      updateTime, hot)
+      md, mdHtml, tocHtml, 
+      createTime, updateTime, hot, 
+      tagNames)
     values (#{name,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, #{descHtml,jdbcType=VARCHAR}, 
-      #{md,jdbcType=VARCHAR}, #{mdHtml,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{hot,jdbcType=INTEGER})
+      #{md,jdbcType=VARCHAR}, #{mdHtml,jdbcType=VARCHAR}, #{tocHtml,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{hot,jdbcType=INTEGER}, 
+      #{tagNames,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lyj.blog.model.Blog" useGeneratedKeys="true">
     insert into blog
@@ -129,6 +133,9 @@
       <if test="mdHtml != null">
         mdHtml,
       </if>
+      <if test="tocHtml != null">
+        tocHtml,
+      </if>
       <if test="createTime != null">
         createTime,
       </if>
@@ -137,6 +144,9 @@
       </if>
       <if test="hot != null">
         hot,
+      </if>
+      <if test="tagNames != null">
+        tagNames,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -155,6 +165,9 @@
       <if test="mdHtml != null">
         #{mdHtml,jdbcType=VARCHAR},
       </if>
+      <if test="tocHtml != null">
+        #{tocHtml,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -163,6 +176,9 @@
       </if>
       <if test="hot != null">
         #{hot,jdbcType=INTEGER},
+      </if>
+      <if test="tagNames != null">
+        #{tagNames,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -193,6 +209,9 @@
       <if test="record.mdHtml != null">
         mdHtml = #{record.mdHtml,jdbcType=VARCHAR},
       </if>
+      <if test="record.tocHtml != null">
+        tocHtml = #{record.tocHtml,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         createTime = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -201,6 +220,9 @@
       </if>
       <if test="record.hot != null">
         hot = #{record.hot,jdbcType=INTEGER},
+      </if>
+      <if test="record.tagNames != null">
+        tagNames = #{record.tagNames,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -215,9 +237,11 @@
       descHtml = #{record.descHtml,jdbcType=VARCHAR},
       md = #{record.md,jdbcType=VARCHAR},
       mdHtml = #{record.mdHtml,jdbcType=VARCHAR},
+      tocHtml = #{record.tocHtml,jdbcType=VARCHAR},
       createTime = #{record.createTime,jdbcType=TIMESTAMP},
       updateTime = #{record.updateTime,jdbcType=TIMESTAMP},
-      hot = #{record.hot,jdbcType=INTEGER}
+      hot = #{record.hot,jdbcType=INTEGER},
+      tagNames = #{record.tagNames,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -240,6 +264,9 @@
       <if test="mdHtml != null">
         mdHtml = #{mdHtml,jdbcType=VARCHAR},
       </if>
+      <if test="tocHtml != null">
+        tocHtml = #{tocHtml,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         createTime = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -248,6 +275,9 @@
       </if>
       <if test="hot != null">
         hot = #{hot,jdbcType=INTEGER},
+      </if>
+      <if test="tagNames != null">
+        tagNames = #{tagNames,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -259,9 +289,11 @@
       descHtml = #{descHtml,jdbcType=VARCHAR},
       md = #{md,jdbcType=VARCHAR},
       mdHtml = #{mdHtml,jdbcType=VARCHAR},
+      tocHtml = #{tocHtml,jdbcType=VARCHAR},
       createTime = #{createTime,jdbcType=TIMESTAMP},
       updateTime = #{updateTime,jdbcType=TIMESTAMP},
-      hot = #{hot,jdbcType=INTEGER}
+      hot = #{hot,jdbcType=INTEGER},
+      tagNames = #{tagNames,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
