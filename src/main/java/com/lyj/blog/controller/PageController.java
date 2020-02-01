@@ -2,6 +2,7 @@ package com.lyj.blog.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.lyj.blog.annotation.NeedLogin;
 import com.lyj.blog.model.Blog;
 import com.lyj.blog.model.Tag;
 import com.lyj.blog.service.BlogService;
@@ -62,8 +63,9 @@ public class PageController {
         return index;
     }
 
-    @RequestMapping("blog")
-    public ModelAndView blog(Integer id) {
+    //查看线上博客和线上草稿
+    @RequestMapping({"blog","draft"})
+    public ModelAndView blog(Integer id,HttpServletRequest request) {
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -84,23 +86,59 @@ public class PageController {
         //查询首页访问次数
         Integer homePageVisitCount = userService.selectAndIncrHomePageVisitCount();
         modelAndView.addObject("homePageVisitCount",homePageVisitCount);//首页访问次数
+        //区分是blog还是draft
+        if(request.getServletPath().equals("/blog")){
+            modelAndView.addObject("blogType","blog");
+        }else if(request.getServletPath().equals("/draft")){
+            modelAndView.addObject("blogType","draft");
+        }
 
         return modelAndView;
     }
-
 
     @RequestMapping("/edit")
     public ModelAndView edit(){
         ModelAndView edit = new ModelAndView("edit");
         edit.addObject("editFlag","edit");
+        //查询所有要提示的tags
+        String tipTags = tagService.getAllTags();
+        edit.addObject("tipTags",tipTags);
         return edit;
     }
 
+    @RequestMapping("/draftPage")
+    public ModelAndView draftPage(){
+        ModelAndView draft = new ModelAndView("draftPage");
+        List<Blog> draftBlogs = blogService.selectAllDraft();
+        draft.addObject("blogType","draftBlog");
+        draft.addObject("draftBlogs",draftBlogs);
+        return draft;
+    }
+
+    //查看本地草稿
+    @RequestMapping("/localDraft")
+    public ModelAndView localDraft(String id){
+        ModelAndView draft = new ModelAndView("blog");
+
+        if(id==null){
+            draft.setViewName("forward:/");//转发到首页
+            return draft;
+        }
+
+        draft.addObject("blogName",id);
+
+        //查询所有的tag
+        List<Tag> tags = tagService.getMaxCountBySize(10);
+        draft.addObject("tags",tags);
+        //查询首页访问次数
+        Integer homePageVisitCount = userService.selectAndIncrHomePageVisitCount();
+        draft.addObject("homePageVisitCount",homePageVisitCount);//首页访问次数
+
+        return draft;
+    }
 
     @RequestMapping("/test")
-    @ResponseBody
     public String test() throws Exception {
-        userService.updateHomePageVisitCountToDataBase();
         return "test";
     }
 
@@ -112,6 +150,7 @@ public class PageController {
      * @throws FileUploadException
      * @throws ServletException
      */
+    @NeedLogin
     @RequestMapping(value = "/uploadImg")
     @ResponseBody
     public String uploadImg(HttpServletRequest request){

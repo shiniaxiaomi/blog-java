@@ -28,6 +28,9 @@
                 <a class="nav-link" href="#">关于</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/draftPage">草稿</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/edit">写博客</a>
             </li>
         </ul>

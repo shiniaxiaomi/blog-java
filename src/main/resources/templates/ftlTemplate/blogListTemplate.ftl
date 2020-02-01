@@ -1,12 +1,12 @@
 <#--定义首页的blog列表-->
 
-<#macro blogList tagColor="" blog="">
+<#macro blogList tagColor="" blog="" blogFlag="blog">
     <#if blog??>
-        <div>
+    <div>
         <#--分界线-->
         <hr>
         <#--标题-->
-        <h3 class="blue"><a href="/blog?id=${blog.id!}">${blog.name!}</a></h3>
+        <h3 class="blue"><a href="/draft?id=${blog.id!}">${blog.name!}</a></h3>
 
         <#--参数-->
         <p class="text-muted" style="margin-bottom: 0px">
@@ -25,10 +25,17 @@
             </span>
             <#--编辑按钮-->
             <#if isLogin==true>
-                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
-                   href="/editDesc?blogId=${blog.id!}">编辑描述</a>
-                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
-                   href="/editBlog?blogId=${blog.id!}">编辑博客</a>
+                <#if blogType?? && blogType=="draft">
+                    <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                       href="/editDraftDesc?blogId=${blog.id!}">编辑描述</a>
+                    <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                       href="/editDraft?blogId=${blog.id!}">编辑草稿</a>
+                <#elseif blogType?? && blogType=="blog">
+                    <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                       href="/editDesc?blogId=${blog.id!}">编辑描述</a>
+                    <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                       href="/editBlog?blogId=${blog.id!}">编辑博客</a>
+                </#if>
             </#if>
         </p>
         <#--标签-->

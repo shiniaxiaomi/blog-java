@@ -52,42 +52,72 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">首页</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">${blog.name!}</li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <#if blog??>
+                                ${blog.name!}
+                            <#elseif blogName??>
+                                ${blogName!}
+                            </#if>
+                        </li>
                     </ol>
                 </nav>
 
                 <#--博客相关信息-->
                 <div class="center">
-                    <h1>${blog.name!}</h1>
+                    <h1>
+                        <#if blog??>
+                            ${blog.name!}
+                        <#elseif blogName??>
+                            ${blogName!}
+                        </#if>
+                    </h1>
 
                     <#--参数-->
                     <p class="text-muted" style="margin-bottom: 0px">
                         <#--博客参数-->
                         <span style="margin-right: 10px">
                             <img class="myIcon" src="/icons/calendar.svg" title="创建日期">
-                            ${blog.createTime?string("yyyy-MM-dd")}
+                            <#if blog??>${blog.createTime?string("yyyy-MM-dd")}</#if>
+
                         </span>
                         <span style="margin-right: 10px">
                             <img class="myIcon" src="/icons/arrow-repeat.svg" title="更新日期">
-                            ${blog.updateTime?string("yyyy-MM-dd")}
+                            <#if blog??>${blog.updateTime?string("yyyy-MM-dd")}</#if>
                         </span>
                         <span style="margin-right: 10px">
                             <img class="myIcon" src="/icons/Eye.svg" title="观看人数">
-                            ${blog.hot!}
+                            <#if blog??>${blog.hot!}</#if>
                         </span>
                         <#--编辑按钮-->
+
                         <#if isLogin==true>
-                            <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
-                               href="/editDesc?blogId=${blog.id!}">编辑描述</a>
-                            <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
-                               href="/editBlog?blogId=${blog.id!}">编辑博客</a>
+                            <#if blogType?? && blogType=="blog">
+                                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                                   href="/editDesc?blogId=${blog.id!}">编辑描述</a>
+                                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                                   href="/editBlog?blogId=${blog.id!}">编辑博客</a>
+                            <#elseif blogType?? && blogType=="draft">
+                                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                                   href="/editDraftDesc?blogId=${blog.id!}">编辑描述</a>
+                                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                                   href="/editDraft?blogId=${blog.id!}">编辑草稿</a>
+                            <#elseif blogName??>
+                                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                                   href="/editLocalDraftDesc?blogId=${blogName!}">编辑描述</a>
+                                <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                                   href="/editLocalDraft?blogId=${blogName!}">编辑本地草稿</a>
+                            </#if>
                         </#if>
                     </p>
                 </div>
 
                 <!--内容主体-->
                 <div data-spy="scroll" data-target="#navbar-example3" data-offset="0">
-                    ${blog.mdHtml!}
+                    <#if blog??>
+                        ${blog.mdHtml!}
+                    <#elseif blogName??>
+                        <div id="localDraftContent"></div>
+                    </#if>
                 </div>
 
             </div>
@@ -101,10 +131,17 @@
             <@introduce/>
 
             <#--toc目录-->
-            <div class="whiteBlock sticky-top scrollspy-example vh-100 overflow-auto">
-                <a class="nav-link" href="#">回到顶部</a>
-                ${blog.tocHtml!}
-            </div>
+            <#if blog??>
+                <div class="whiteBlock sticky-top scrollspy-example vh-100 overflow-auto">
+                    <a class="nav-link" href="#">回到顶部</a>
+                    ${blog.tocHtml!}
+                </div>
+            <#elseif blogName??>
+                <div id="localDraftToc" class="whiteBlock sticky-top scrollspy-example vh-100 overflow-auto">
+                    <a class="nav-link" href="#">回到顶部</a>
+                </div>
+            </#if>
+
         </div>
     </div>
 </div>
@@ -122,14 +159,30 @@
 <#--引入登入模板(该模板需要刚在jquery加载之后的body标签内)-->
 <#include  "ftlTemplate/loginTemplate.ftl">
 
+<script src="/js/websql.js"></script>
+
 <script>
+
+    var localDraft=undefined;
+
     $(function () {
+
+        //如果编辑本地草稿,则先读取
+        <#if blogName??>
+            selectDraftByName("${blogName!}",function (data) {
+                localDraft=data[0];
+                $("#localDraftContent").append(localDraft.mdHtml);
+                $("#localDraftToc").append(localDraft.tocHtml);
+            })
+        </#if>
 
         //开启提示工具
         $('[data-toggle="tooltip"]').tooltip();
 
         //开启滚动监听
-        $("body").scrollspy({ target: '#navbar-example' })
+        setTimeout(function () {
+            $("body").scrollspy({ target: '#navbar-example' })
+        },500)
 
     })
 </script>

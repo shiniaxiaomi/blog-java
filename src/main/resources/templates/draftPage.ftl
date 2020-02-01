@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-    <title>首页 | 是你啊小米-陆英杰关注后端Java技术</title>
+    <title>草稿 | 是你啊小米-陆英杰关注后端Java技术</title>
 
     <#--blog-->
     <link rel="stylesheet" href="/css/blog.css">
@@ -26,34 +26,30 @@
 
         <#--左侧-->
         <div class="col-lg-9">
-            <#--置顶博客-->
-            <div class="whiteBlock">
-                <div>
-                    <p class="text-muted" style="font-size: 20px;">置顶</p>
-                </div>
-                <!--每篇置顶博客-->
-                <#if stickBlogs??>
-                    <#list stickBlogs as blog>
-                        <#include "ftlTemplate/blogListTemplate.ftl">
-                        <@blogList tagColor="badge-danger" blog=blog/>
-                    </#list>
-                </#if>
-            </div>
 
-            <#--最新博客-->
+            <#--线上草稿(如果登入则显示)-->
+            <#if isLogin==true>
             <div class="whiteBlock">
                 <div>
-                    <p class="text-muted" style="font-size: 20px;">最新博客</p>
+                    <p class="text-muted" style="font-size: 20px;">线上草稿</p>
                 </div>
                 <#--每篇博客-->
-                <#if blogs??>
-                    <#list blogs as blog>
+                <#if draftBlogs??>
+                    <#list draftBlogs as draftBlog>
                         <#include "ftlTemplate/blogListTemplate.ftl">
-                        <@blogList tagColor="badge-warning" blog=blog/>
+                        <@blogList tagColor="badge-warning" blog=draftBlog/>
                     </#list>
                 </#if>
             </div>
+            </#if>
 
+            <#--本地草稿(不管是否登入都显示)-->
+            <div class="whiteBlock">
+                <div>
+                    <p class="text-muted" style="font-size: 20px;">本地草稿</p>
+                </div>
+                <div id="localDraft"></div>
+            </div>
         </div>
 
         <#--右侧-->
@@ -75,6 +71,9 @@
 <!-- 弹窗 -->
 <script src="/js/pop.js"></script>
 
+<script src="/js/websql.js"></script>
+<script src="/js/LocalDraft.js"></script>
+
 <#--引入登入模板(该模板需要刚在jquery加载之后的body标签内)-->
 <#include  "ftlTemplate/loginTemplate.ftl">
 
@@ -82,6 +81,9 @@
     $(function () {
         //开启提示工具
         $('[data-toggle="tooltip"]').tooltip();
+
+
+        buildLoaclDraftHtml()
 
     })
 </script>
