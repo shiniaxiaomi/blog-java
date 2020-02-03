@@ -18,10 +18,6 @@
     <link href="tagsinput/tokenfield.css" rel="stylesheet" type="text/css">
 
     <style>
-        /*tag-it*/
-        .ui-front{
-            z-index: 100000;
-        }
         /*编辑页面下的toc样式*/
         #custom-toc-container .markdown-toc-list{
             padding-left: 20px;
@@ -52,7 +48,7 @@
 <body>
 
 <#--引入顶部导航栏-->
-<#include "ftlTemplate/headerTemplate.ftl">
+<#include "ftlTemplate/navTemplate.ftl">
 <@header/>
 
 <div class="row mx-2">
@@ -79,16 +75,6 @@
                                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
                                    onclick="saveDesc()"
                                <#if isLogin==true>title="将博客描述保存到线上"<#else >title="请先登入"</#if> >保存博客描述</a>
-                            </#if>
-                            <#if editFlag=="editDraftDesc">
-                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                   onclick="saveDraftDesc()"
-                                   <#if isLogin==true>title="将草稿描述保存到线上"<#else >title="请先登入"</#if> >保存草稿描述</a>
-                            </#if>
-                            <#if editFlag=="edit" || editFlag=="editDraft">
-                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                   onclick="openModalFunc('saveDraft')"
-                                   <#if isLogin==true>title="将草稿保存到线上"<#else>title="请先登入"</#if> >保存到线上草稿</a>
                             </#if>
                             <#if editFlag=="edit" || editFlag=="editLocalDraft">
                                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
@@ -129,12 +115,11 @@
             <#--编辑器-->
             <div id="test-editor">
                 <textarea style="display:none;"
-                ><#if editFlag=="editBlog" || editFlag=="editDraft">${blog.md!}</#if><#if editFlag=="editDesc" || editFlag=="editDraftDesc">${blog.desc!}</#if></textarea>
+                ><#if editFlag=="editBlog">${blog.md!}</#if><#if editFlag=="editDesc">${blog.desc!}</#if></textarea>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <#--modal-->
@@ -153,7 +138,7 @@
                         <label for="blogName" class="col col-form-label">名称</label>
                         <div class="col">
                             <input class="form-control" id="blogName" placeholder=""
-                                   value="<#if editFlag=="editBlog" || editFlag=="editDraft">${blog.name!}<#elseif editFlag=="editLocalDraft">${blogName!}</#if>">
+                                   value="<#if editFlag=="editBlog">${blog.name!}<#elseif editFlag=="editLocalDraft">${blogName!}</#if>">
                         </div>
                     </div>
                     <div class="form-group">
@@ -190,6 +175,7 @@
 <#include  "ftlTemplate/loginTemplate.ftl">
 
 <script src="/js/websql.js"></script>
+<script src="/js/edit.js"></script>
 
 
 <script type="text/javascript">
@@ -287,90 +273,6 @@
         editor.watch();
     })
 
-    //返回首页
-    function goHome() {
-        setTimeout(function () {
-            pop.confirm("是否前往首页?",function () {
-                window.location.href="/";
-            })
-        },1000)
-    }
-
-    //返回草稿页
-    function goDraft() {
-        setTimeout(function () {
-            pop.confirm("是否前往草稿页?",function () {
-                window.location.href="/draftPage";
-            })
-        },1000)
-    }
-
-    //获取预览的html
-    function getHtml() {
-        //替换header的id
-        let query = $(".editormd-preview-container").find(":header");
-        if(linkId==undefined || linkId.length==0){
-            buildTocHtml();//buildTocHtml必须要在getHtml之前执行
-        }
-        for(var i=0;i<linkId.length;i++){
-            var header=query[i];
-            $(header).attr("id",linkId[i]);
-        }
-        return "<div class=\"markdown-body editormd-preview-container\" previewcontainer=\"true\">"
-            +$(".editormd-preview-container").eq(0).html()
-            +"</div>"
-    }
-
-    //递归生成tocHtml
-    var linkId=[];//保存生成的linkId
-    function buildTocHtml() {
-        //如果是移动端,先生成toc目录结构,在构建tocHtml
-        if(isMobile){
-            editor.watch();
-        }
-        linkId=[];//清空
-        var html={str:""};
-        html.str+="<ul class='nav flex-column' id='navbar-example'>";
-        var toc=$("#custom-toc-container").find(".markdown-toc-list").eq(0);//拿到ul对象
-        if(toc.children().length!=0){
-            for(var i=0;i<toc.children().length;i++){
-                _buildTocHtml(html,toc.children()[i]);
-            }
-        }
-        html.str+="</ul>";
-        return html.str;
-    }
-    //去遍历子组件
-    function _buildTocHtml(html,child) {
-        if(child.tagName=="A"){
-            linkId.push("h"+child.attributes.level.value+"-"+child.text);
-            html.str+="<a class='nav-link' href='#h"+child.attributes.level.value+'-'+child.text+"'>"+child.text+"</a>";
-            return;//没有子节点,返回
-        }else if(child.tagName=="LI"){
-            if(child.length==0){
-                return;//没有子节点,返回
-            }
-            html.str+="<li class='nav-item'>";
-            //有子节点,则遍历子节点
-            var childs=$(child).children();
-            for(var i=0;i<childs.length;i++){
-                _buildTocHtml(html,childs[i]);
-            }
-            html.str+="</li>";
-        }else if(child.tagName=="UL"){
-            if(child.length==0){
-                return;//没有子节点,返回
-            }
-            html.str+="<ul>";
-            //有子节点,则遍历子节点
-            var childs=$(child).children();
-            for(var i=0;i<childs.length;i++){
-                _buildTocHtml(html,childs[i]);
-            }
-            html.str+="</ul>";
-        }
-    }
-
     //不同modal的按钮点击所触发的事件(控制不同的modal的标题和按钮名称)
     function openModalFunc(flag) {
         //控制不同的标题
@@ -381,23 +283,12 @@
                     pop.prompt("请先登入", 1500);
                     return;
                 }
-                $("#headerName").text("保存到线上博客");
+                $("#headerName").text("保存博客");
                 $("#saveBtn").text("保存博客");
                 $("#saveBtn").attr("flag","saveBlog");
                 break;
-            case "saveDraft":
-                //如果未登入
-                if(!isLogin){
-                    pop.prompt("请先登入", 1500);
-                    return;
-                }
-                $("#headerName").text("保存到线上草稿");
-                $("#saveBtn").text("保存草稿");
-                $("#saveBtn").attr("flag","saveDraft");
-                tokenfield.setItems({id:"草稿",name:"草稿"});
-                break;
             case "saveLocalDraft":
-                $("#headerName").text("保存到本地草稿");
+                $("#headerName").text("保存本地草稿");
                 $("#saveBtn").text("保存本地草稿");
                 $("#saveBtn").attr("flag","saveLocalDraft");
                 tokenfield.setItems({id:"本地草稿",name:"本地草稿"});
@@ -414,35 +305,11 @@
             case "saveBlog":
                 saveBlog();
                 break;
-            case "saveDraft":
-                saveDraft();
-                break;
             case "saveLocalDraft":
                 saveLocalDraft();
                 break;
         }
     })
-
-    //获取tags的信息
-    function getTags() {
-        var tags=tokenfield.getItems();
-        var tagNames="";
-        for(var i=0;i<tags.length;i++){
-            tagNames+=tags[i].name+",";
-        }
-        tagNames=tagNames.substring(0,tagNames.length-1);
-        return tagNames;
-    }
-
-    //重置保存Modal
-    function resetSaveModal() {
-        //隐藏弹窗
-        $("#myModal").modal("hide");
-        //清除数据
-        $("#blogName").val("");
-        //清除tag
-        tokenfield.emptyItems();
-    }
 
     //保存blog的函数
     function saveBlog() {
@@ -461,27 +328,9 @@
         })
     }
 
-    //保存线上草稿
-    function saveDraft() {
-        $.post("/saveDraft",{
-            id:blogId,
-            name:$("#blogName").val(),
-            tagNames:getTags(),
-            md:editor.getMarkdown(),
-            tocHtml:buildTocHtml(),//生成toc内容
-            mdHtml: getHtml(),
-        },function (data,status) {
-            //成功提示
-            pop.prompt(data.data, 1500);
-            resetSaveModal();
-            goDraft();
-        })
-
-    }
-
     //保存本地草稿
     function saveLocalDraft() {
-        var date=new Date().getDate();
+        var date=new Date().Format("yyyy-MM-dd");
         if(localDraft==undefined){
             //不存在
             insertDraft({
@@ -514,7 +363,7 @@
     //保存本地草稿描述
     function saveLocalDesc() {
         pop.confirm("确定保存本地草稿描述吗?",function () {
-            var date=new Date().getDate();
+            var date=new Date().Format("yyyy-MM-dd");
 
             //先删除,修改后插入数据
             deleteDraftByName(localDraft.id);
@@ -544,20 +393,7 @@
             })
         })
     }
-    //保存草稿到线上
-    function saveDraftDesc(){
-        pop.confirm("确定保存草稿描述到线上吗?",function () {
-            $.post("/saveDraftDesc",{
-                id:blogId,
-                desc:editor.getMarkdown(),
-                descHtml:getHtml()
-            },function (data,status) {
-                //成功提示
-                pop.prompt(data.data,1000);
-                goDraft();
-            })
-        })
-    }
+
 
 </script>
 

@@ -34,29 +34,43 @@
     <#--标签-->
     <div class="whiteBlock">
         <p class="text-left">标签</p>
-        <#if tags??>
-            <#list tags as tag>
-                <a href="/" class="badge badge-success">${tag.name!}</a>
-            </#list>
-        </#if>
+        <div id="tagsDiv">
+            <#if tags??>
+                <#list tags as tag>
+                    <a href="/moreBlogByTag?id=${tag.id!}" class="badge badge-success">${tag.name!}</a>
+                </#list>
+                <a class="badge badge-blue" href="javascript:void(0);" onclick="getMoreTags()">更多</a>
+            </#if>
+        </div>
+        <script>
+            function getMoreTags() {
+                $.get("/moreTags",function(data,status){
+                    if(data.code==200){
+                        var tagsHtml="";
+                        for(var i=0;i<data.data.length;i++){
+                            var tag=data.data[i];
+                            tagsHtml+="<a style=\"margin-right: 4px;\" href=\"/moreBlogByTag?id="+tag.id+"\" class=\"badge badge-success\">"+tag.name+"</a>";
+                        }
+                        $("#tagsDiv").html(tagsHtml);
+                    }
+                })
+            }
+        </script>
     </div>
 
     <!--归档-->
     <div class="whiteBlock" >
         <p class="text-left">归档</p>
         <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                总计
-                <span class="badge badge-blue badge-pill">220</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                2020年
-                <span class="badge badge-blue badge-pill">14</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                2019年
-                <span class="badge badge-blue badge-pill">123</span>
-            </li>
+            <#if blogCounts??>
+                <#list blogCounts as blogCount>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a class="text-body" style="font-family: Menlo"
+                           <#if blogCount.year!="总计">href="/moreBlogByYear?year=${blogCount.year!}"</#if>>${blogCount.year!}<#if blogCount.year!="总计">年</#if></a>
+                        <span class="badge badge-blue badge-pill">${blogCount.count!}</span>
+                    </li>
+                </#list>
+            </#if>
         </ul>
     </div>
 

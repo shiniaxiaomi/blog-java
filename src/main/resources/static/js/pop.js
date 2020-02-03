@@ -250,7 +250,7 @@ var pop = {
             '<div id="new_prompt">' +
             '<style type="text/css">' +
             '*{margin:0; padding: 0;}' +
-            '#new_prompt{position:absolute;z-index: 123456789; left: 50%;top: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.8); border-radius: 5px; overflow: hidden; opacity: 0;}' +
+            '#new_prompt{position:fixed;z-index: 123456789; left: 50%;top: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.8); border-radius: 5px; overflow: hidden; opacity: 0;}' +
             '#new_prompt p{padding: 8px 10px; color: #fff; font-size: 14px; margin: 0;}' +
             '.parentPosition{position: relative;}' +
             '</style>' +

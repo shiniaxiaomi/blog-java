@@ -4,10 +4,10 @@ package com.lyj.blog.controller;
 import com.alibaba.fastjson.JSON;
 import com.lyj.blog.annotation.NeedLogin;
 import com.lyj.blog.model.Blog;
+import com.lyj.blog.model.Message;
 import com.lyj.blog.model.Tag;
-import com.lyj.blog.service.BlogService;
-import com.lyj.blog.service.TagService;
-import com.lyj.blog.service.UserService;
+import com.lyj.blog.service.*;
+import com.lyj.blog.util.MyUtil;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 @Controller
@@ -40,41 +41,115 @@ public class PageController {
     UserService userService;
 
     @Autowired
+    BlogAndTagService blogAndTagService;
+
+    @Autowired
     HttpSession session;
+
+    @Autowired
+    PageDataService pageDataService;
 
     @RequestMapping("/")
     public ModelAndView index() throws Exception {
 
-        ModelAndView index = new ModelAndView("index");
+        ModelAndView index = new ModelAndView("home");
 
-        //查询所有置顶的博客
-        List<Blog> stickBlogs = tagService.getBlogsByTagName("置顶");
+        //置顶博客
+        List<Blog> stickBlogs = tagService.getBlogsByTagName("置顶",1);//只要置顶数量不超过10个即可
         index.addObject("stickBlogs",stickBlogs);
-        //分页查询blog
-        List<Blog> blogs = blogService.get(0, 10,stickBlogs);
+        //最新博客(分页)
+        List<Blog> blogs = blogService.getBlogs(0, 10);
         index.addObject("blogs",blogs);
-        //查询所有的tag
-        List<Tag> tags = tagService.getMaxCountBySize(10);
-        index.addObject("tags",tags);
-        //查询首页访问次数
-        Integer homePageVisitCount = userService.selectAndIncrHomePageVisitCount();
-        index.addObject("homePageVisitCount",homePageVisitCount);//首页访问次数
+        //提供介绍数据
+        pageDataService.provideIntroduceData(index);
+        //标记访问类型
+        index.addObject("blogType","blog");//类型编辑为blog
 
         return index;
     }
 
+    //分页查看所有的blog(每页10条)
+    @RequestMapping("moreBlog")
+    public ModelAndView moreBlog(String page) throws Exception {
+
+        ModelAndView modelAndView = new ModelAndView("moreBlog");
+
+        Integer intPage = MyUtil.pageCheck(page);
+
+        //分页查询blog
+        List<Blog> blogs = blogService.getBlogs(intPage, 10);
+        modelAndView.addObject("blogs",blogs);
+
+        pageDataService.provideIntroduceData(modelAndView);
+
+        //标记访问类型
+        modelAndView.addObject("blogType","blog");//类型编辑为blog
+
+        //当前是第几页
+        modelAndView.addObject("nowPage",intPage);
+        modelAndView.addObject("nowSize",blogs.size());
+
+        return modelAndView;
+    }
+
+    //分页查看所有的草稿(每页10条)
+    @RequestMapping("moreDraft")
+    public ModelAndView moreDraft(String page){
+
+        ModelAndView modelAndView = new ModelAndView("moreDraft");
+
+        Integer intPage = MyUtil.pageCheck(page);
+
+        //分页查询blog
+        List<Blog> blogs = blogService.getBlogsByTagName("草稿", intPage, 10);
+        modelAndView.addObject("blogs",blogs);
+
+        pageDataService.provideIntroduceData(modelAndView);
+
+        //标记访问类型
+        modelAndView.addObject("blogType","blog");//类型编辑为blog
+
+        //当前是第几页
+        modelAndView.addObject("nowPage",intPage);
+        modelAndView.addObject("nowSize",blogs.size());
+
+        return modelAndView;
+    }
+
+    //分页查看所有的草稿(每页10条)
+    @RequestMapping("moreLocalDraft")
+    public ModelAndView moreLocalDraft(String page){
+
+        ModelAndView modelAndView = new ModelAndView("moreLocalDraft");
+
+        Integer intPage = MyUtil.pageCheck(page);
+
+        pageDataService.provideIntroduceData(modelAndView);
+
+        //标记访问类型
+        modelAndView.addObject("blogType","localDraft");//类型编辑为本地草稿
+
+        //当前是第几页
+        modelAndView.addObject("nowPage",intPage);
+        modelAndView.addObject("nowSize",0);
+
+        return modelAndView;
+    }
+
+
+
+
     //查看线上博客和线上草稿
-    @RequestMapping({"blog","draft"})
+    @RequestMapping("blog")
     public ModelAndView blog(Integer id,HttpServletRequest request) {
 
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("blogContext");
 
         if(id==null){
             modelAndView.setViewName("forward:/");//转发到首页
             return modelAndView;
         }
 
-        modelAndView.setViewName("blog");
         //查询对应的blog
         Blog blog = blogService.selectBlogById(id);
         Integer visitCount = blogService.selectAndIncrVisitCount(id);//查询对应博客的访问次数并递增
@@ -86,15 +161,89 @@ public class PageController {
         //查询首页访问次数
         Integer homePageVisitCount = userService.selectAndIncrHomePageVisitCount();
         modelAndView.addObject("homePageVisitCount",homePageVisitCount);//首页访问次数
-        //区分是blog还是draft
-        if(request.getServletPath().equals("/blog")){
-            modelAndView.addObject("blogType","blog");
-        }else if(request.getServletPath().equals("/draft")){
-            modelAndView.addObject("blogType","draft");
-        }
+
+        //提供介绍数据
+        pageDataService.provideIntroduceData(modelAndView);
 
         return modelAndView;
     }
+
+    @RequestMapping("aboutMe")
+    public ModelAndView aboutMe() throws Exception {
+        Tag tag = tagService.selectTagByTagName("介绍");
+        List<Blog> blogs = blogAndTagService.selectBlogsByTagId(tag.getId(),1,10);
+        //因为介绍只有一篇
+        if(blogs.size()==0){
+            throw new Exception("还没有介绍");
+        }else{
+            //转发到blog展示页面,展示介绍博客
+            return new ModelAndView("forward:/blog?id="+blogs.get(0).getId());
+        }
+    }
+
+    //查询tag对应的blog
+    @RequestMapping("moreBlogByTag")
+    public ModelAndView moreBlogByTag(Integer id,String page) {
+
+        ModelAndView modelAndView = new ModelAndView("moreBlogByTag");
+
+        if(id==null){
+            modelAndView.setViewName("forward:/");//转发到首页
+            return modelAndView;
+        }
+
+        Integer intPage = MyUtil.pageCheck(page);
+
+        //tag对应的blogs
+        List<Blog> blogs = blogAndTagService.selectBlogsByTagId(id,intPage,10);
+        modelAndView.addObject("blogs",blogs);
+        //对应的tag
+        Tag tag = tagService.selectTagByTagId(id);
+        modelAndView.addObject("tag",tag);
+
+        pageDataService.provideIntroduceData(modelAndView);
+
+        //当前是第几页
+        modelAndView.addObject("nowPage",intPage);
+        //总共的页数
+        modelAndView.addObject("nowSize",blogs.size());
+
+        return modelAndView;
+
+    }
+
+    //查询tag对应的blog
+    @RequestMapping("moreBlogByYear")
+    public ModelAndView moreBlogByYear(String year,String page) throws ParseException {
+
+        ModelAndView modelAndView = new ModelAndView("moreBlogByYear");
+
+        if(year==null){
+            modelAndView.setViewName("forward:/");//转发到首页
+            return modelAndView;
+        }
+
+        Integer intPage = MyUtil.pageCheck(page);
+        Integer intYear = MyUtil.yearCheck(year);
+
+        //year对应的blog
+        List<Blog> blogs = blogService.selectBlogByYear(intYear, intPage, 10);
+        modelAndView.addObject("blogs",blogs);
+
+
+        pageDataService.provideIntroduceData(modelAndView);
+
+        //当前是第几页
+        modelAndView.addObject("nowPage",intPage);
+        //总共的页数
+        modelAndView.addObject("nowSize",blogs.size());
+
+        modelAndView.addObject("year",String.valueOf(intYear));
+
+        return modelAndView;
+
+    }
+
 
     @RequestMapping("/edit")
     public ModelAndView edit(){
@@ -106,19 +255,36 @@ public class PageController {
         return edit;
     }
 
-    @RequestMapping("/draftPage")
-    public ModelAndView draftPage(){
-        ModelAndView draft = new ModelAndView("draftPage");
-        List<Blog> draftBlogs = blogService.selectAllDraft();
-        draft.addObject("blogType","draftBlog");
+    @RequestMapping("/draftHome")
+    public ModelAndView draftHome(String page){
+        ModelAndView draft = new ModelAndView("draftHome");
+
+        Integer intPage = MyUtil.pageCheck(page);
+
+        List<Blog> draftBlogs = blogService.selectDraft(intPage);
+
+        draft.addObject("blogType","blog");
         draft.addObject("draftBlogs",draftBlogs);
+        //查询所有的tag
+        List<Tag> tags = tagService.getMaxCountBySize(10);
+        draft.addObject("tags",tags);
+        //查询首页访问次数
+        Integer homePageVisitCount = userService.selectAndIncrHomePageVisitCount();
+        draft.addObject("homePageVisitCount",homePageVisitCount);//首页访问次数
+
+        //提供介绍数据
+        pageDataService.provideIntroduceData(draft);
+
+        //当前是第几页
+        draft.addObject("nowPage",intPage);
+
         return draft;
     }
 
     //查看本地草稿
     @RequestMapping("/localDraft")
     public ModelAndView localDraft(String id){
-        ModelAndView draft = new ModelAndView("blog");
+        ModelAndView draft = new ModelAndView("localDraftContext");
 
         if(id==null){
             draft.setViewName("forward:/");//转发到首页
@@ -126,6 +292,7 @@ public class PageController {
         }
 
         draft.addObject("blogName",id);
+        draft.addObject("blogType","localDraft");//标记为本地草稿
 
         //查询所有的tag
         List<Tag> tags = tagService.getMaxCountBySize(10);
@@ -134,12 +301,18 @@ public class PageController {
         Integer homePageVisitCount = userService.selectAndIncrHomePageVisitCount();
         draft.addObject("homePageVisitCount",homePageVisitCount);//首页访问次数
 
+        //提供介绍数据
+        pageDataService.provideIntroduceData(draft);
+
         return draft;
     }
 
-    @RequestMapping("/test")
-    public String test() throws Exception {
-        return "test";
+    //其实是获取到所有的tags,并按照文章数量降序排列
+    @RequestMapping("/moreTags")
+    @ResponseBody
+    public Message moreTags(){
+        List<Tag> tags = tagService.selectAllTags();
+        return Message.success(tags);
     }
 
     /**

@@ -1,14 +1,15 @@
 
-function buildLoaclDraftHtml() {
+function buildLoaclDraftHtml(page) {
 
-    _selectDraft("select id,descHtml,tagNames,createTime,updateTime from draft",function (data) {
+    console.log("select id,descHtml,tagNames,createTime,updateTime from draft limit "+(page-1)*10+",10")
+    _selectDraft("select id,descHtml,tagNames,createTime,updateTime from draft limit "+(page-1)*10+",10",function (data) {
         let localDraft = $("#localDraft");
         for(var i=0;i<data.length;i++){
             var draft=data[i];
             var tagsHtml="";
             let tags = draft.tagNames.split(",");
             for(let j=0;j<tags.length;j++){
-                tagsHtml+="<a href='/' class='badge badge-success'>"+tags[j]+"</a>";
+                tagsHtml+="<a href='javascript:void(0);' class='badge badge-success'>"+tags[j]+"</a>";
             }
 
             var html=`
@@ -35,9 +36,11 @@ function buildLoaclDraftHtml() {
                         </span>
                         <!--编辑按钮-->
                         <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
+                           href="javascript:void(0);" onclick="deleteFunc('localDraft','`+draft.id+`')">删除草稿</a>
+                        <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
                            href="/editLocalDraftDesc?blogId=`+draft.id+`">编辑描述</a>
                         <a type="button" style="margin-top: -2px;" class="btn btn-link btn-xs px-0"
-                           href="/editLocalDraft?blogId=`+draft.id+`">编辑博客</a>
+                           href="/editLocalDraft?blogId=`+draft.id+`">编辑草稿</a>
                     </p>
                     <!--标签-->
                     <div style="margin-bottom: 10px">

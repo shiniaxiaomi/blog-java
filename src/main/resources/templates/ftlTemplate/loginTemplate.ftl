@@ -59,5 +59,13 @@
                 }
             })
         })
+
     </script>
 </#if>
+
+<script>
+    $(function () {
+        //搜索框自动聚焦
+        $("#keywordInput").focus();
+    })
+</script>

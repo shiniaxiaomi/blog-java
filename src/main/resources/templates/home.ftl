@@ -17,7 +17,7 @@
 <body>
 
 <#--引入顶部导航栏-->
-<#include "ftlTemplate/headerTemplate.ftl">
+<#include "ftlTemplate/navTemplate.ftl">
 <@header/>
 
 <#--主体-->
@@ -26,34 +26,22 @@
 
         <#--左侧-->
         <div class="col-lg-9">
+            <#include "ftlTemplate/blogListTemplate.ftl">
+
             <#--置顶博客-->
             <div class="whiteBlock">
-                <div>
+                <@blogList blogs=stickBlogs tagColor="badge-danger">
                     <p class="text-muted" style="font-size: 20px;">置顶</p>
-                </div>
-                <!--每篇置顶博客-->
-                <#if stickBlogs??>
-                    <#list stickBlogs as blog>
-                        <#include "ftlTemplate/blogListTemplate.ftl">
-                        <@blogList tagColor="badge-danger" blog=blog/>
-                    </#list>
-                </#if>
+                </@blogList>
             </div>
 
             <#--最新博客-->
             <div class="whiteBlock">
-                <div>
-                    <p class="text-muted" style="font-size: 20px;">最新博客</p>
-                </div>
-                <#--每篇博客-->
-                <#if blogs??>
-                    <#list blogs as blog>
-                        <#include "ftlTemplate/blogListTemplate.ftl">
-                        <@blogList tagColor="badge-warning" blog=blog/>
-                    </#list>
-                </#if>
+                <@blogList blogs=blogs tagColor="badge-warning">
+                    <p class="text-muted d-inline" style="font-size: 20px;">最新博客</p>
+                    <a class="text-muted" style="float: right" href="/moreBlog?page=1">更多</a>
+                </@blogList>
             </div>
-
         </div>
 
         <#--右侧-->
@@ -83,7 +71,25 @@
         //开启提示工具
         $('[data-toggle="tooltip"]').tooltip();
 
+        // $("#keywordInput").focus();
+
     })
+
+    //删除blog或者localDraft
+    function deleteFunc(type,id){
+        if(type=="blog"){
+            pop.confirm("是否要删除",function () {
+                $.post("/deleteBlog?blogId="+id,function (data, status) {
+                    pop.prompt("删除成功");
+                    if(data.code==200){
+                        setTimeout(function () {
+                            window.location.reload();//刷新页面
+                        },1000)
+                    }
+                })
+            })
+        }
+    }
 </script>
 
 
