@@ -70,6 +70,22 @@
         $('[data-toggle="tooltip"]').tooltip();
 
     })
+
+    //删除blog或者localDraft
+    function deleteFunc(type,id){
+        if(type=="blog"){
+            pop.confirm("是否要删除",function () {
+                $.post("/deleteBlog?blogId="+id,function (data, status) {
+                    pop.prompt("删除成功");
+                    if(data.code==200){
+                        setTimeout(function () {
+                            window.location.reload();//刷新页面
+                        },1000)
+                    }
+                })
+            })
+        }
+    }
 </script>
 
 

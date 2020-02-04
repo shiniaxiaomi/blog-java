@@ -171,6 +171,8 @@ public class PageController {
     @RequestMapping("aboutMe")
     public ModelAndView aboutMe() throws Exception {
         Tag tag = tagService.selectTagByTagName("介绍");
+        if(tag==null) return new ModelAndView("forward:/");//转发的首页
+
         List<Blog> blogs = blogAndTagService.selectBlogsByTagId(tag.getId(),1,10);
         //因为介绍只有一篇
         if(blogs.size()==0){
